@@ -7,54 +7,56 @@ namespace GameStore.WinFormsApp
         private readonly Logic _gameLogic = new Logic();
         private Game? _selectedGame;
 
-        /// <summary>
-        /// Инициализирует новый экземпляр формы.
-        /// </summary>
-        public Form1()
+        /// <summary>
+        /// Инициализирует новый экземпляр формы.
+        /// </summary>
+        public Form1()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Обрабатывает событие загрузки формы для первоначальной настройки.
-        /// </summary>
-        private void Form1_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает событие загрузки формы для первоначальной настройки.
+        /// </summary>
+        private void Form1_Load(object sender, EventArgs e)
         {
             LoadInitialData();
             SetupDataGridView();
             RefreshGrid();
         }
 
-        /// <summary>
-        /// Загружает начальный набор демонстрационных данных в бизнес-логику.
-        /// </summary>
-        private void LoadInitialData()
+        /// <summary>
+        /// Загружает начальный набор демонстрационных данных в бизнес-логику.
+        /// </summary>
+        private void LoadInitialData()
         {
-            _gameLogic.CreateGame("Stardew Valley", "Simulator", 299m);
-            _gameLogic.CreateGame("Hades", "Roguelike", 899m);
-            _gameLogic.CreateGame("Factorio", "Simulator", 520m);
-            _gameLogic.CreateGame("Slay the Spire", "Roguelike", 515m);
+            _gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 10); // 10% discount
+            _gameLogic.CreateGame("Hades", "Roguelike", 899m);
+            _gameLogic.CreateGame("Factorio", "Simulator", 520m, 25); // 25% discount
+            _gameLogic.CreateGame("Slay the Spire", "Roguelike", 515m);
         }
 
-        /// <summary>
-        /// Настраивает колонки и внешний вид элемента DataGridView.
-        /// </summary>
-        private void SetupDataGridView()
+        /// <summary>
+        /// Настраивает колонки и внешний вид элемента DataGridView.
+        /// </summary>
+        private void SetupDataGridView()
         {
             gamesDataGridView.AutoGenerateColumns = false;
             gamesDataGridView.Columns.Clear();
             gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Id", HeaderText = "ID", Width = 40 });
-            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Title", HeaderText = "Название", Width = 180 });
-            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Genre", HeaderText = "Жанр", Width = 120 });
-            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Цена", Width = 80, DefaultCellStyle = new DataGridViewCellStyle { Format = "F2" } });
+            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Title", HeaderText = "Название", Width = 150 });
+            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Genre", HeaderText = "Жанр", Width = 100 });
+            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Price", HeaderText = "Цена", Width = 70, DefaultCellStyle = new DataGridViewCellStyle { Format = "F2" } });
+            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "DiscountPercentage", HeaderText = "Скидка, %", Width = 70 });
+            gamesDataGridView.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "DiscountedPrice", HeaderText = "Цена со скидкой", Width = 70, DefaultCellStyle = new DataGridViewCellStyle { Format = "F2" } });
             gamesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             gamesDataGridView.MultiSelect = false;
         }
 
-        /// <summary>
-        /// Обновляет данные в таблице и опционально восстанавливает выделение указанной строки.
-        /// </summary>
-        private void RefreshGrid(int? idToSelect = null)
+        /// <summary>
+        /// Обновляет данные в таблице и опционально восстанавливает выделение указанной строки.
+        /// </summary>
+        private void RefreshGrid(int? idToSelect = null)
         {
             gamesDataGridView.DataSource = null;
             gamesDataGridView.DataSource = _gameLogic.GetAllGames();
@@ -78,23 +80,24 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Очищает поля для ввода текста и сбрасывает состояние кнопок и выбора.
-        /// </summary>
-        private void ClearInputFields()
+        /// <summary>
+        /// Очищает поля для ввода текста и сбрасывает состояние кнопок и выбора.
+        /// </summary>
+        private void ClearInputFields()
         {
             txtTitle.Text = string.Empty;
             txtGenre.Text = string.Empty;
             txtPrice.Text = string.Empty;
+            txtDiscount.Text = "0";
             _selectedGame = null;
             btnUpdate.Enabled = false;
             btnDelete.Enabled = false;
         }
 
-        /// <summary>
-        /// Обрабатывает изменение выделенной строки в таблице для отображения данных в полях ввода.
-        /// </summary>
-        private void gamesDataGridView_SelectionChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает изменение выделенной строки в таблице для отображения данных в полях ввода.
+        /// </summary>
+        private void gamesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             if (gamesDataGridView.SelectedRows.Count > 0)
             {
@@ -102,58 +105,84 @@ namespace GameStore.WinFormsApp
                 txtTitle.Text = _selectedGame.Title;
                 txtGenre.Text = _selectedGame.Genre;
                 txtPrice.Text = _selectedGame.Price.ToString("F2");
+                txtDiscount.Text = _selectedGame.DiscountPercentage.ToString();
                 btnUpdate.Enabled = true;
                 btnDelete.Enabled = true;
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Добавить" для создания новой игры.
-        /// </summary>
-        private void btnAdd_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Добавить" для создания новой игры.
+        /// </summary>
+        private void btnAdd_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTitle.Text) || string.IsNullOrWhiteSpace(txtGenre.Text))
             {
-                MessageBox.Show("Название и Жанр не могут быть пустыми.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Название и Жанр не могут быть пустыми.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (decimal.TryParse(txtPrice.Text, out decimal price))
+
+            if (!decimal.TryParse(txtPrice.Text, out decimal price))
             {
-                _gameLogic.CreateGame(txtTitle.Text, txtGenre.Text, price);
-                RefreshGrid();
+                MessageBox.Show("Пожалуйста, введите корректную цену.", "Ошибка формата", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else
+            if (!decimal.TryParse(txtDiscount.Text, out decimal discount))
             {
-                MessageBox.Show("Пожалуйста, введите корректную цену.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Пожалуйста, введите корректную скидку.", "Ошибка формата", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                _gameLogic.CreateGame(txtTitle.Text, txtGenre.Text, price, discount);
+                RefreshGrid();
+                ClearInputFields();
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка валидации", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Изменить" для обновления данных выбранной игры.
-        /// </summary>
-        private void btnUpdate_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Изменить" для обновления данных выбранной игры.
+        /// </summary>
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (_selectedGame == null) return;
 
-            if (decimal.TryParse(txtPrice.Text, out decimal price))
+            if (string.IsNullOrWhiteSpace(txtTitle.Text) || string.IsNullOrWhiteSpace(txtGenre.Text))
             {
-                _gameLogic.UpdateGame(_selectedGame.Id, txtTitle.Text, txtGenre.Text, price);
+                MessageBox.Show("Название и Жанр не могут быть пустыми.", "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(txtPrice.Text, out decimal price) || !decimal.TryParse(txtDiscount.Text, out decimal discount))
+            {
+                MessageBox.Show("Пожалуйста, введите корректные числовые значения для цены и скидки.", "Ошибка формата", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                _gameLogic.UpdateGame(_selectedGame.Id, txtTitle.Text, txtGenre.Text, price, discount);
                 RefreshGrid(_selectedGame.Id);
             }
-            else
+            catch (ArgumentException ex)
             {
-                MessageBox.Show("Пожалуйста, введите корректную цену.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, "Ошибка валидации", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Удалить" для удаления выбранной игры.
-        /// </summary>
-        private void btnDelete_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Удалить" для удаления выбранной игры.
+        /// </summary>
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             if (_selectedGame == null) return;
             var confirmResult = MessageBox.Show($"Вы уверены, что хотите удалить игру '{_selectedGame.Title}'?",
-                                                 "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                              "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirmResult == DialogResult.Yes)
             {
                 _gameLogic.DeleteGame(_selectedGame.Id);
@@ -161,10 +190,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки для группировки игр по жанру и вывода результата.
-        /// </summary>
-        private void btnGroup_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для группировки игр по жанру и вывода результата.
+        /// </summary>
+        private void btnGroup_Click(object sender, EventArgs e)
         {
             var groupedGames = _gameLogic.GroupGamesByGenre();
             resultsTextBox.Clear();
@@ -180,34 +209,34 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки для снятия выделения в таблице и очистки полей ввода.
-        /// </summary>
-        private void btnClearSelection_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для снятия выделения в таблице и очистки полей ввода.
+        /// </summary>
+        private void btnClearSelection_Click(object sender, EventArgs e)
         {
             gamesDataGridView.ClearSelection();
             ClearInputFields();
         }
 
-        /// <summary>
-        /// (НОВАЯ ФУНКЦИЯ) Показывает игры дешевле указанной суммы.
-        /// </summary>
-        private void btnShowCheaper_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для показа списка игр со скидкой.
+        /// </summary>
+        private void btnShowDiscounted_Click(object sender, EventArgs e)
         {
-            decimal priceLimit = 500m;
-            var cheapGames = _gameLogic.GetGamesCheaperThan(priceLimit);
+            var discountedGames = _gameLogic.GetGamesWithDiscount();
             resultsTextBox.Clear();
-            resultsTextBox.Text = $"--- Игры дешевле {priceLimit} ₽ ---\n\n";
+            resultsTextBox.Text = "--- Игры со скидкой ---\n\n";
 
-            if (!cheapGames.Any())
+            if (!discountedGames.Any())
             {
                 resultsTextBox.Text += "Таких игр не найдено.";
                 return;
             }
 
-            foreach (var game in cheapGames)
+            foreach (var game in discountedGames)
             {
-                resultsTextBox.Text += $"- {game.Title} ({game.Price:F2} ₽)\n";
+                resultsTextBox.Text += $"{game.Title} ({game.DiscountPercentage}%)\n";
+                resultsTextBox.Text += $"\t{game.Price:F2} ₽ -> {game.DiscountedPrice:F2} ₽\n\n";
             }
         }
     }

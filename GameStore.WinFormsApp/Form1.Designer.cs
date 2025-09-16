@@ -13,183 +13,199 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-        private void InitializeComponent()
+        private void InitializeComponent()
         {
-            gamesDataGridView = new DataGridView();
-            groupBoxEditor = new GroupBox();
-            btnClearSelection = new Button();
-            btnDelete = new Button();
-            btnUpdate = new Button();
-            btnAdd = new Button();
-            txtPrice = new TextBox();
-            lblPrice = new Label();
-            txtGenre = new TextBox();
-            lblGenre = new Label();
-            txtTitle = new TextBox();
-            lblTitle = new Label();
-            groupBoxBusiness = new GroupBox();
-            btnShowCheaper = new Button();
-            resultsTextBox = new RichTextBox();
-            btnGroup = new Button();
-            ((System.ComponentModel.ISupportInitialize)gamesDataGridView).BeginInit();
-            groupBoxEditor.SuspendLayout();
-            groupBoxBusiness.SuspendLayout();
-            SuspendLayout();
+            this.gamesDataGridView = new System.Windows.Forms.DataGridView();
+            this.groupBoxEditor = new System.Windows.Forms.GroupBox();
+            this.txtDiscount = new System.Windows.Forms.TextBox();
+            this.lblDiscount = new System.Windows.Forms.Label();
+            this.btnClearSelection = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnUpdate = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.txtPrice = new System.Windows.Forms.TextBox();
+            this.lblPrice = new System.Windows.Forms.Label();
+            this.txtGenre = new System.Windows.Forms.TextBox();
+            this.lblGenre = new System.Windows.Forms.Label();
+            this.txtTitle = new System.Windows.Forms.TextBox();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.groupBoxBusiness = new System.Windows.Forms.GroupBox();
+            this.btnShowDiscounted = new System.Windows.Forms.Button();
+            this.resultsTextBox = new System.Windows.Forms.RichTextBox();
+            this.btnGroup = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.gamesDataGridView)).BeginInit();
+            this.groupBoxEditor.SuspendLayout();
+            this.groupBoxBusiness.SuspendLayout();
+            this.SuspendLayout();
 
-            gamesDataGridView.AllowUserToAddRows = false;
-            gamesDataGridView.AllowUserToDeleteRows = false;
-            gamesDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gamesDataGridView.Location = new Point(12, 12);
-            gamesDataGridView.Name = "gamesDataGridView";
-            gamesDataGridView.ReadOnly = true;
-            gamesDataGridView.Size = new Size(480, 426);
-            gamesDataGridView.TabIndex = 0;
-            gamesDataGridView.SelectionChanged += gamesDataGridView_SelectionChanged;
+            this.gamesDataGridView.AllowUserToAddRows = false;
+            this.gamesDataGridView.AllowUserToDeleteRows = false;
+            this.gamesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gamesDataGridView.Location = new System.Drawing.Point(12, 12);
+            this.gamesDataGridView.Name = "gamesDataGridView";
+            this.gamesDataGridView.ReadOnly = true;
+            this.gamesDataGridView.Size = new System.Drawing.Size(550, 426);
+            this.gamesDataGridView.TabIndex = 0;
+            this.gamesDataGridView.SelectionChanged += new System.EventHandler(this.gamesDataGridView_SelectionChanged);
 
-            groupBoxEditor.Controls.Add(btnClearSelection);
-            groupBoxEditor.Controls.Add(btnDelete);
-            groupBoxEditor.Controls.Add(btnUpdate);
-            groupBoxEditor.Controls.Add(btnAdd);
-            groupBoxEditor.Controls.Add(txtPrice);
-            groupBoxEditor.Controls.Add(lblPrice);
-            groupBoxEditor.Controls.Add(txtGenre);
-            groupBoxEditor.Controls.Add(lblGenre);
-            groupBoxEditor.Controls.Add(txtTitle);
-            groupBoxEditor.Controls.Add(lblTitle);
-            groupBoxEditor.Location = new Point(508, 12);
-            groupBoxEditor.Name = "groupBoxEditor";
-            groupBoxEditor.Size = new Size(280, 200);
-            groupBoxEditor.TabIndex = 1;
-            groupBoxEditor.TabStop = false;
-            groupBoxEditor.Text = "Редактор";
+            this.groupBoxEditor.Controls.Add(this.txtDiscount);
+            this.groupBoxEditor.Controls.Add(this.lblDiscount);
+            this.groupBoxEditor.Controls.Add(this.btnClearSelection);
+            this.groupBoxEditor.Controls.Add(this.btnDelete);
+            this.groupBoxEditor.Controls.Add(this.btnUpdate);
+            this.groupBoxEditor.Controls.Add(this.btnAdd);
+            this.groupBoxEditor.Controls.Add(this.txtPrice);
+            this.groupBoxEditor.Controls.Add(this.lblPrice);
+            this.groupBoxEditor.Controls.Add(this.txtGenre);
+            this.groupBoxEditor.Controls.Add(this.lblGenre);
+            this.groupBoxEditor.Controls.Add(this.txtTitle);
+            this.groupBoxEditor.Controls.Add(this.lblTitle);
+            this.groupBoxEditor.Location = new System.Drawing.Point(578, 12);
+            this.groupBoxEditor.Name = "groupBoxEditor";
+            this.groupBoxEditor.Size = new System.Drawing.Size(280, 230);
+            this.groupBoxEditor.TabIndex = 1;
+            this.groupBoxEditor.TabStop = false;
+            this.groupBoxEditor.Text = "Редактор";
 
-            btnClearSelection.Location = new Point(18, 160);
-            btnClearSelection.Name = "btnClearSelection";
-            btnClearSelection.Size = new Size(120, 23);
-            btnClearSelection.TabIndex = 9;
-            btnClearSelection.Text = "Снять выделение";
-            btnClearSelection.UseVisualStyleBackColor = true;
-            btnClearSelection.Click += btnClearSelection_Click;
+            this.txtDiscount.Location = new System.Drawing.Point(90, 113);
+            this.txtDiscount.Name = "txtDiscount";
+            this.txtDiscount.Size = new System.Drawing.Size(173, 23);
+            this.txtDiscount.TabIndex = 11;
 
-            btnDelete.Enabled = false;
-            btnDelete.Location = new Point(188, 122);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(75, 23);
-            btnDelete.TabIndex = 8;
-            btnDelete.Text = "Удалить";
-            btnDelete.UseVisualStyleBackColor = true;
-            btnDelete.Click += btnDelete_Click;
+            this.lblDiscount.AutoSize = true;
+            this.lblDiscount.Location = new System.Drawing.Point(18, 116);
+            this.lblDiscount.Name = "lblDiscount";
+            this.lblDiscount.Size = new System.Drawing.Size(63, 15);
+            this.lblDiscount.TabIndex = 10;
+            this.lblDiscount.Text = "Скидка, %";
 
-            btnUpdate.Enabled = false;
-            btnUpdate.Location = new Point(102, 122);
-            btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(75, 23);
-            btnUpdate.TabIndex = 7;
-            btnUpdate.Text = "Изменить";
-            btnUpdate.UseVisualStyleBackColor = true;
-            btnUpdate.Click += btnUpdate_Click;
+            this.btnClearSelection.Location = new System.Drawing.Point(18, 190);
+            this.btnClearSelection.Name = "btnClearSelection";
+            this.btnClearSelection.Size = new System.Drawing.Size(120, 23);
+            this.btnClearSelection.TabIndex = 9;
+            this.btnClearSelection.Text = "Снять выделение";
+            this.btnClearSelection.UseVisualStyleBackColor = true;
+            this.btnClearSelection.Click += new System.EventHandler(this.btnClearSelection_Click);
 
-            btnAdd.Location = new Point(18, 122);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(75, 23);
-            btnAdd.TabIndex = 6;
-            btnAdd.Text = "Добавить";
-            btnAdd.UseVisualStyleBackColor = true;
-            btnAdd.Click += btnAdd_Click;
+            this.btnDelete.Enabled = false;
+            this.btnDelete.Location = new System.Drawing.Point(188, 152);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnDelete.TabIndex = 8;
+            this.btnDelete.Text = "Удалить";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 
-            txtPrice.Location = new Point(74, 84);
-            txtPrice.Name = "txtPrice";
-            txtPrice.Size = new Size(189, 23);
-            txtPrice.TabIndex = 5;
+            this.btnUpdate.Enabled = false;
+            this.btnUpdate.Location = new System.Drawing.Point(102, 152);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.TabIndex = 7;
+            this.btnUpdate.Text = "Изменить";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+ 
+            this.btnAdd.Location = new System.Drawing.Point(18, 152);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.TabIndex = 6;
+            this.btnAdd.Text = "Добавить";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 
-            lblPrice.AutoSize = true;
-            lblPrice.Location = new Point(18, 87);
-            lblPrice.Name = "lblPrice";
-            lblPrice.Size = new Size(35, 15);
-            lblPrice.TabIndex = 4;
-            lblPrice.Text = "Цена";
+            this.txtPrice.Location = new System.Drawing.Point(90, 84);
+            this.txtPrice.Name = "txtPrice";
+            this.txtPrice.Size = new System.Drawing.Size(173, 23);
+            this.txtPrice.TabIndex = 5;
 
-            txtGenre.Location = new Point(74, 55);
-            txtGenre.Name = "txtGenre";
-            txtGenre.Size = new Size(189, 23);
-            txtGenre.TabIndex = 3;
+            this.lblPrice.AutoSize = true;
+            this.lblPrice.Location = new System.Drawing.Point(18, 87);
+            this.lblPrice.Name = "lblPrice";
+            this.lblPrice.Size = new System.Drawing.Size(35, 15);
+            this.lblPrice.TabIndex = 4;
+            this.lblPrice.Text = "Цена";
 
-            lblGenre.AutoSize = true;
-            lblGenre.Location = new Point(18, 58);
-            lblGenre.Name = "lblGenre";
-            lblGenre.Size = new Size(38, 15);
-            lblGenre.TabIndex = 2;
-            lblGenre.Text = "Жанр";
+            this.txtGenre.Location = new System.Drawing.Point(90, 55);
+            this.txtGenre.Name = "txtGenre";
+            this.txtGenre.Size = new System.Drawing.Size(173, 23);
+            this.txtGenre.TabIndex = 3;
 
-            txtTitle.Location = new Point(74, 26);
-            txtTitle.Name = "txtTitle";
-            txtTitle.Size = new Size(189, 23);
-            txtTitle.TabIndex = 1;
+            this.lblGenre.AutoSize = true;
+            this.lblGenre.Location = new System.Drawing.Point(18, 58);
+            this.lblGenre.Name = "lblGenre";
+            this.lblGenre.Size = new System.Drawing.Size(38, 15);
+            this.lblGenre.TabIndex = 2;
+            this.lblGenre.Text = "Жанр";
 
-            lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(18, 29);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(59, 15);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "Название";
+            this.txtTitle.Location = new System.Drawing.Point(90, 26);
+            this.txtTitle.Name = "txtTitle";
+            this.txtTitle.Size = new System.Drawing.Size(173, 23);
+            this.txtTitle.TabIndex = 1;
 
-            groupBoxBusiness.Controls.Add(btnShowCheaper);
-            groupBoxBusiness.Controls.Add(resultsTextBox);
-            groupBoxBusiness.Controls.Add(btnGroup);
-            groupBoxBusiness.Location = new Point(508, 218);
-            groupBoxBusiness.Name = "groupBoxBusiness";
-            groupBoxBusiness.Size = new Size(280, 220);
-            groupBoxBusiness.TabIndex = 2;
-            groupBoxBusiness.TabStop = false;
-            groupBoxBusiness.Text = "Бизнес-функции";
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Location = new System.Drawing.Point(18, 29);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(59, 15);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "Название";
 
-            btnShowCheaper.Location = new Point(18, 51);
-            btnShowCheaper.Name = "btnShowCheaper";
-            btnShowCheaper.Size = new Size(245, 23);
-            btnShowCheaper.TabIndex = 2;
-            btnShowCheaper.Text = "Показать игры дешевле 500 ₽";
-            btnShowCheaper.UseVisualStyleBackColor = true;
-            btnShowCheaper.Click += btnShowCheaper_Click;
+            this.groupBoxBusiness.Controls.Add(this.btnShowDiscounted);
+            this.groupBoxBusiness.Controls.Add(this.resultsTextBox);
+            this.groupBoxBusiness.Controls.Add(this.btnGroup);
+            this.groupBoxBusiness.Location = new System.Drawing.Point(578, 248);
+            this.groupBoxBusiness.Name = "groupBoxBusiness";
+            this.groupBoxBusiness.Size = new System.Drawing.Size(280, 190);
+            this.groupBoxBusiness.TabIndex = 2;
+            this.groupBoxBusiness.TabStop = false;
+            this.groupBoxBusiness.Text = "Бизнес-функции";
 
-            resultsTextBox.Location = new Point(18, 80);
-            resultsTextBox.Name = "resultsTextBox";
-            resultsTextBox.ReadOnly = true;
-            resultsTextBox.Size = new Size(245, 125);
-            resultsTextBox.TabIndex = 1;
-            resultsTextBox.Text = "";
+            this.btnShowDiscounted.Location = new System.Drawing.Point(18, 51);
+            this.btnShowDiscounted.Name = "btnShowDiscounted";
+            this.btnShowDiscounted.Size = new System.Drawing.Size(245, 23);
+            this.btnShowDiscounted.TabIndex = 2;
+            this.btnShowDiscounted.Text = "Показать все игры со скидкой";
+            this.btnShowDiscounted.UseVisualStyleBackColor = true;
+            this.btnShowDiscounted.Click += new System.EventHandler(this.btnShowDiscounted_Click);
 
-            btnGroup.Location = new Point(18, 22);
-            btnGroup.Name = "btnGroup";
-            btnGroup.Size = new Size(245, 23);
-            btnGroup.TabIndex = 0;
-            btnGroup.Text = "Сгруппировать по жанру";
-            btnGroup.UseVisualStyleBackColor = true;
-            btnGroup.Click += btnGroup_Click;
+            this.resultsTextBox.Location = new System.Drawing.Point(18, 80);
+            this.resultsTextBox.Name = "resultsTextBox";
+            this.resultsTextBox.ReadOnly = true;
+            this.resultsTextBox.Size = new System.Drawing.Size(245, 95);
+            this.resultsTextBox.TabIndex = 1;
+            this.resultsTextBox.Text = "";
 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(groupBoxBusiness);
-            Controls.Add(groupBoxEditor);
-            Controls.Add(gamesDataGridView);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-            Name = "Form1";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Магазин Игр";
-            Load += Form1_Load;
-            ((System.ComponentModel.ISupportInitialize)gamesDataGridView).EndInit();
-            groupBoxEditor.ResumeLayout(false);
-            groupBoxEditor.PerformLayout();
-            groupBoxBusiness.ResumeLayout(false);
-            ResumeLayout(false);
+            this.btnGroup.Location = new System.Drawing.Point(18, 22);
+            this.btnGroup.Name = "btnGroup";
+            this.btnGroup.Size = new System.Drawing.Size(245, 23);
+            this.btnGroup.TabIndex = 0;
+            this.btnGroup.Text = "Сгруппировать по жанру";
+            this.btnGroup.UseVisualStyleBackColor = true;
+            this.btnGroup.Click += new System.EventHandler(this.btnGroup_Click);
+
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(870, 450);
+            this.Controls.Add(this.groupBoxBusiness);
+            this.Controls.Add(this.groupBoxEditor);
+            this.Controls.Add(this.gamesDataGridView);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Магазин Игр";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.gamesDataGridView)).EndInit();
+            this.groupBoxEditor.ResumeLayout(false);
+            this.groupBoxEditor.PerformLayout();
+            this.groupBoxBusiness.ResumeLayout(false);
+            this.ResumeLayout(false);
         }
 
-        #endregion
+        #endregion
 
-        private DataGridView gamesDataGridView;
+        private DataGridView gamesDataGridView;
         private GroupBox groupBoxEditor;
         private TextBox txtTitle;
         private Label lblTitle;
@@ -204,6 +220,8 @@
         private RichTextBox resultsTextBox;
         private Button btnGroup;
         private Button btnClearSelection;
-        private Button btnShowCheaper;
+        private Button btnShowDiscounted;
+        private TextBox txtDiscount;
+        private Label lblDiscount;
     }
 }

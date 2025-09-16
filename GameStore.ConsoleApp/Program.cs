@@ -6,12 +6,10 @@ namespace GameStore.ConsoleApp
 {
     internal class Program
     {
-        // Создаем единственный экземпляр логики для всего приложения
         private static readonly Logic gameLogic = new Logic();
 
         static void Main(string[] args)
         {
-            // Загружаем начальные данные для демонстрации
             LoadInitialData();
 
             while (true)
@@ -19,9 +17,10 @@ namespace GameStore.ConsoleApp
                 Console.WriteLine("\n------ Магазин игр Steam ------");
                 Console.WriteLine("1. Показать все игры");
                 Console.WriteLine("2. Добавить новую игру");
-                Console.WriteLine("3. Удалить игру");
-                Console.WriteLine("4. Сгруппировать игры по жанру");
-                Console.WriteLine("5. Показать игры дешевле 500 руб.");
+                Console.WriteLine("3. Изменить игру");
+                Console.WriteLine("4. Удалить игру");
+                Console.WriteLine("5. Сгруппировать игры по жанру");
+                Console.WriteLine("6. Показать все игры со скидкой");
                 Console.WriteLine("0. Выход");
                 Console.Write("Выберите действие: ");
 
@@ -36,16 +35,19 @@ namespace GameStore.ConsoleApp
                         AddNewGame();
                         break;
                     case "3":
-                        DeleteGame();
+                        UpdateGameConsole();
                         break;
                     case "4":
-                        ShowGamesGroupedByGenre();
+                        DeleteGame();
                         break;
                     case "5":
-                        ShowGamesCheaperThan500();
+                        ShowGamesGroupedByGenre();
+                        break;
+                    case "6":
+                        ShowDiscountedGames();
                         break;
                     case "0":
-                        return; // Выход из приложения
+                        return;
                     default:
                         Console.WriteLine("Неверный ввод. Пожалуйста, попробуйте снова.");
                         break;
@@ -53,20 +55,20 @@ namespace GameStore.ConsoleApp
             }
         }
 
-        /// <summary>
-        /// Загружает начальный набор данных.
-        /// </summary>
-        private static void LoadInitialData()
+        /// <summary>
+        /// Загружает начальный набор данных.
+        /// </summary>
+        private static void LoadInitialData()
         {
-            gameLogic.CreateGame("Stardew Valley", "Simulator", 299m);
+            gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 15);
             gameLogic.CreateGame("Hades", "Roguelike", 899m);
-            gameLogic.CreateGame("Factorio", "Simulator", 520m);
+            gameLogic.CreateGame("Factorio", "Simulator", 520m, 20);
         }
 
-        /// <summary>
-        /// Выводит список всех игр в консоль.
-        /// </summary>
-        private static void ShowAllGames()
+        /// <summary>
+        /// Выводит список всех игр в консоль.
+        /// </summary>
+        private static void ShowAllGames()
         {
             var games = gameLogic.GetAllGames();
             Console.WriteLine("\n--- Список всех игр ---");
@@ -77,36 +79,79 @@ namespace GameStore.ConsoleApp
             }
             foreach (var game in games)
             {
-                Console.WriteLine($"ID: {game.Id}, Название: {game.Title}, Жанр: {game.Genre}, Цена: {game.Price:F2} руб.");
+                string discountInfo = game.DiscountPercentage > 0 ? $" (Скидка {game.DiscountPercentage}%, Новая цена: {game.DiscountedPrice:F2} руб.)" : "";
+                Console.WriteLine($"ID: {game.Id}, {game.Title} ({game.Genre}) - {game.Price:F2} руб.{discountInfo}");
             }
         }
 
-        /// <summary>
-        /// Запрашивает у пользователя данные для создания новой игры.
-        /// </summary>
-        private static void AddNewGame()
+        /// <summary>
+        /// Запрашивает у пользователя данные для создания новой игры.
+        /// </summary>
+      	private static void AddNewGame()
         {
             try
             {
                 Console.WriteLine("\n--- Добавление новой игры ---");
+
                 Console.Write("Введите название: ");
                 string title = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(title)) { Console.WriteLine("Ошибка: Название не может быть пустым."); return; }
+
                 Console.Write("Введите жанр: ");
                 string genre = Console.ReadLine();
-                Console.Write("Введите цену: ");
-                decimal price = decimal.Parse(Console.ReadLine());
+                if (string.IsNullOrWhiteSpace(genre)) { Console.WriteLine("Ошибка: Жанр не может быть пустым."); return; }
 
-                var newGame = gameLogic.CreateGame(title, genre, price);
+                Console.Write("Введите цену: ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal price)) { Console.WriteLine("Ошибка: неверный формат цены."); return; }
+
+                Console.Write("Введите скидку в % (или 0, если нет): ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal discount)) { Console.WriteLine("Ошибка: неверный формат скидки."); return; }
+
+                var newGame = gameLogic.CreateGame(title, genre, price, discount);
                 Console.WriteLine($"Игра '{newGame.Title}' успешно добавлена!");
             }
-            catch (FormatException)
+            catch (ArgumentException ex) { Console.WriteLine($"Ошибка валидации: {ex.Message}"); }
+            catch (Exception ex) { Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}"); }
+        }
+
+        /// <summary>
+        /// Запрашивает у пользователя данные для изменения существующей игры.
+        /// </summary>
+        private static void UpdateGameConsole()
+        {
+            try
             {
-                Console.WriteLine("Ошибка: неверный формат цены.");
+                Console.Write("\nВведите ID игры для изменения: ");
+                if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Ошибка: ID должен быть числом."); return; }
+
+                var game = gameLogic.ReadGame(id);
+                if (game == null) { Console.WriteLine($"Игра с ID {id} не найдена."); return; }
+
+                Console.WriteLine($"--- Изменение игры: {game.Title} ---");
+
+                Console.Write($"Новое название (Enter, чтобы оставить '{game.Title}'): ");
+                string newTitle = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(newTitle)) newTitle = game.Title;
+
+                Console.Write($"Новый жанр (Enter, чтобы оставить '{game.Genre}'): ");
+                string newGenre = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(newGenre)) newGenre = game.Genre;
+
+                Console.Write($"Новая цена (Enter, чтобы оставить '{game.Price:F2}'): ");
+                string priceStr = Console.ReadLine();
+                if (!decimal.TryParse(priceStr, out decimal newPrice)) newPrice = game.Price;
+
+                Console.Write($"Новая скидка в % (Enter, чтобы оставить '{game.DiscountPercentage}'): ");
+                string discountStr = Console.ReadLine();
+                if (!decimal.TryParse(discountStr, out decimal newDiscount)) newDiscount = game.DiscountPercentage;
+
+                if (gameLogic.UpdateGame(id, newTitle, newGenre, newPrice, newDiscount))
+                {
+                    Console.WriteLine("Игра успешно обновлена!");
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Произошла ошибка: {ex.Message}");
-            }
+            catch (ArgumentException ex) { Console.WriteLine($"Ошибка валидации: {ex.Message}"); }
+            catch (Exception ex) { Console.WriteLine($"Произошла ошибка: {ex.Message}"); }
         }
 
         /// <summary>
@@ -120,19 +165,10 @@ namespace GameStore.ConsoleApp
                 Console.Write("Введите ID игры для удаления: ");
                 int id = int.Parse(Console.ReadLine());
 
-                if (gameLogic.DeleteGame(id))
-                {
-                    Console.WriteLine($"Игра с ID {id} успешно удалена.");
-                }
-                else
-                {
-                    Console.WriteLine($"Игра с ID {id} не найдена.");
-                }
+                if (gameLogic.DeleteGame(id)) { Console.WriteLine($"Игра с ID {id} успешно удалена."); }
+                else { Console.WriteLine($"Игра с ID {id} не найдена."); }
             }
-            catch (FormatException)
-            {
-                Console.WriteLine("Ошибка: ID должен быть числом.");
-            }
+            catch (FormatException) { Console.WriteLine("Ошибка: ID должен быть числом."); }
         }
 
         /// <summary>
@@ -153,21 +189,21 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Выводит в консоль игры дешевле 500 рублей (Бизнес-функция 2).
+        /// Выводит в консоль список игр, на которые действует скидка (Бизнес-функция 2).
         /// </summary>
-        private static void ShowGamesCheaperThan500()
+        private static void ShowDiscountedGames()
         {
-            decimal priceLimit = 500m;
-            var cheapGames = gameLogic.GetGamesCheaperThan(priceLimit);
-            Console.WriteLine($"\n--- Игры дешевле {priceLimit} руб. ---");
-            if (!cheapGames.Any())
+            var discountedGames = gameLogic.GetGamesWithDiscount();
+            Console.WriteLine("\n--- Игры со скидкой ---");
+            if (!discountedGames.Any())
             {
-                Console.WriteLine("Таких игр нет.");
+                Console.WriteLine("На данный момент игр со скидкой нет.");
                 return;
             }
-            foreach (var game in cheapGames)
+
+            foreach (var game in discountedGames)
             {
-                Console.WriteLine($"- {game.Title} ({game.Price:F2} руб.)");
+                Console.WriteLine($"- {game.Title}, скидка {game.DiscountPercentage}%. Старая цена: {game.Price:F2} руб. -> Новая цена: {game.DiscountedPrice:F2} руб.");
             }
         }
     }
