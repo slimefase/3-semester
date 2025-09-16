@@ -159,7 +159,7 @@
             this.groupBoxBusiness.Size = new System.Drawing.Size(280, 190);
             this.groupBoxBusiness.TabIndex = 2;
             this.groupBoxBusiness.TabStop = false;
-            this.groupBoxBusiness.Text = "Бизнес-функции";
+            this.groupBoxBusiness.Text = "Функции";
 
             this.btnShowDiscounted.Location = new System.Drawing.Point(18, 51);
             this.btnShowDiscounted.Name = "btnShowDiscounted";
@@ -194,7 +194,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Магазин Игр";
+            this.Text = "Steam";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gamesDataGridView)).EndInit();
             this.groupBoxEditor.ResumeLayout(false);
