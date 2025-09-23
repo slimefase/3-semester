@@ -15,7 +15,11 @@ namespace GameStore.WinFormsApp
         {
             ApplicationConfiguration.Initialize();
 
-            string dbPath = @"C:\Учёба\Архитектура информационных систем\3-semester\GameStoreDatabase.mdf";
+            // Получаем корневую папку решения (3-semester) относительно текущей директории
+            string solutionRoot = GetSolutionRootDirectory();
+
+            // Формируем путь к .mdf файлу базы данных
+            string dbPath = Path.GetFullPath(Path.Combine(solutionRoot, "GameStoreDatabase.mdf"));
 
             var connectionString = $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=MySharedGameStoreDB;Integrated Security=True;Connect Timeout=30";
 
@@ -39,9 +43,26 @@ namespace GameStore.WinFormsApp
             }
 
             IRepository<Game> repository = new EntityRepository<Game>(new DBContext(options));
-
             var gameLogic = new Logic(repository);
             Application.Run(new Form1(gameLogic));
+        }
+
+        /// <summary>
+        /// Метод для определения корневой директории решения (папки 3-semester).
+        /// Предполагается, что приложение запускается внутри структуры решения.
+        /// </summary>
+        /// <returns>Полный путь к корню решения</returns>
+        private static string GetSolutionRootDirectory()
+        {
+            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var directory = new DirectoryInfo(currentDirectory);
+            while (directory != null && directory.Name.ToLower() != "3-semester")
+            {
+                directory = directory.Parent;
+            }
+            if (directory == null)
+                throw new DirectoryNotFoundException("Корневая папка решения '3-semester' не найдена.");
+            return directory.FullName;
         }
     }
 }
