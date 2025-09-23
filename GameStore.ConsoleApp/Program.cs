@@ -1,15 +1,24 @@
-﻿using GameStore.Model;
+﻿using GameStore.DataAccessLayer;
+using GameStore.Model;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace GameStore.ConsoleApp
 {
     internal class Program
     {
-        private static readonly Logic gameLogic = new Logic();
+        private static Logic gameLogic;
 
         static void Main(string[] args)
         {
+            string dbPath = @"C:\Учёба\Архитектура информационных систем\3-semester\GameStoreDatabase.mdf";
+
+            var connectionString = $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=MySharedGameStoreDB;Integrated Security=True;Connect Timeout=30";
+
+            InitializeDatabase(connectionString);
             LoadInitialData();
 
             while (true)
@@ -55,20 +64,54 @@ namespace GameStore.ConsoleApp
             }
         }
 
-        /// <summary>
-        /// Загружает начальный набор данных.
-        /// </summary>
-        private static void LoadInitialData()
+        /// <summary>
+        /// Инициализирует контекст базы данных и репозиторий.
+        /// </summary>
+        /// <param name="connectionString">Строка подключения к базе данных.</param>
+        private static void InitializeDatabase(string connectionString)
         {
-            gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 15);
-            gameLogic.CreateGame("Hades", "Roguelike", 899m);
-            gameLogic.CreateGame("Factorio", "Simulator", 520m, 20);
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseSqlServer(connectionString)
+                .Options;
+
+            using (var context = new DBContext(options))
+            {
+                try
+                {
+                    context.Database.EnsureCreated();
+                }
+                catch (SqlException ex)
+                {
+                    // Игнорируем ошибку, если база данных уже существует и прикреплена
+                    if (!ex.Message.Contains("уже существует") && !ex.Message.Contains("already exists"))
+                    {
+                        throw; // Если ошибка другая, ее нужно показать
+                    }
+                }
+            }
+
+            IRepository<Game> repository = new EntityRepository<Game>(new DBContext(options));
+            gameLogic = new Logic(repository);
         }
 
-        /// <summary>
-        /// Выводит список всех игр в консоль.
-        /// </summary>
-        private static void ShowAllGames()
+        /// <summary>
+        /// Загружает начальный набор данных, если база пуста.
+        /// </summary>
+        private static void LoadInitialData()
+        {
+            var existingGames = gameLogic.GetAllGames();
+            if (!existingGames.Any())
+            {
+                gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 15);
+                gameLogic.CreateGame("Hades", "Roguelike", 899m);
+                gameLogic.CreateGame("Factorio", "Simulator", 520m, 20);
+            }
+        }
+
+        /// <summary>
+        /// Выводит список всех игр в консоль.
+        /// </summary>
+        private static void ShowAllGames()
         {
             var games = gameLogic.GetAllGames();
             Console.WriteLine("\n--- Список всех игр ---");
@@ -84,10 +127,10 @@ namespace GameStore.ConsoleApp
             }
         }
 
-        /// <summary>
-        /// Запрашивает у пользователя данные для создания новой игры.
-        /// </summary>
-      	private static void AddNewGame()
+        /// <summary>
+        /// Запрашивает у пользователя данные для создания новой игры.
+        /// </summary>
+        private static void AddNewGame()
         {
             try
             {
@@ -172,7 +215,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Выводит в консоль игры, сгруппированные по жанру (Бизнес-функция 1).
+        /// Выводит в консоль игры, сгруппированные по жанру.
         /// </summary>
         private static void ShowGamesGroupedByGenre()
         {
@@ -189,7 +232,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Выводит в консоль список игр, на которые действует скидка (Бизнес-функция 2).
+        /// Выводит в консоль список игр, на которые действует скидка.
         /// </summary>
         private static void ShowDiscountedGames()
         {

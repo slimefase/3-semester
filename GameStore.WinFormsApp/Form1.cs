@@ -1,45 +1,55 @@
 ﻿using GameStore.Model;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace GameStore.WinFormsApp
 {
     public partial class Form1 : Form
     {
-        private readonly Logic _gameLogic = new Logic();
+        private readonly Logic _gameLogic;
         private Game? _selectedGame;
 
-        /// <summary>
-        /// Инициализирует новый экземпляр формы.
-        /// </summary>
-        public Form1()
+        /// <summary>
+        /// Инициализирует новый экземпляр формы с готовым экземпляром бизнес-логики.
+        /// </summary>
+        /// <param name="gameLogic">Экземпляр бизнес-логики.</param>
+        public Form1(Logic gameLogic)
         {
             InitializeComponent();
+            _gameLogic = gameLogic;
         }
 
-        /// <summary>
-        /// Обрабатывает событие загрузки формы для первоначальной настройки.
-        /// </summary>
-        private void Form1_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает событие загрузки формы для первоначальной настройки.
+        /// </summary>
+        private void Form1_Load(object sender, EventArgs e)
         {
             LoadInitialData();
             SetupDataGridView();
             RefreshGrid();
         }
 
-        /// <summary>
-        /// Загружает начальный набор демонстрационных данных в бизнес-логику.
-        /// </summary>
-        private void LoadInitialData()
+
+        /// <summary>
+        /// Загружает начальный набор демонстрационных данных в бизнес-логику.
+        /// </summary>
+        private void LoadInitialData()
         {
-            _gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 10); // 10% discount
-            _gameLogic.CreateGame("Hades", "Roguelike", 899m);
-            _gameLogic.CreateGame("Factorio", "Simulator", 520m, 25); // 25% discount
-            _gameLogic.CreateGame("Slay the Spire", "Roguelike", 515m);
+            var existing = _gameLogic.GetAllGames();
+            if (!existing.Any())
+            {
+                _gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 10);
+                _gameLogic.CreateGame("Hades", "Roguelike", 899m);
+                _gameLogic.CreateGame("Factorio", "Simulator", 520m, 25);
+                _gameLogic.CreateGame("Slay the Spire", "Roguelike", 515m);
+            }
         }
 
-        /// <summary>
-        /// Настраивает колонки и внешний вид элемента DataGridView.
-        /// </summary>
-        private void SetupDataGridView()
+        /// <summary>
+        /// Настраивает колонки и внешний вид элемента DataGridView.
+        /// </summary>
+        private void SetupDataGridView()
         {
             gamesDataGridView.AutoGenerateColumns = false;
             gamesDataGridView.Columns.Clear();
@@ -53,10 +63,10 @@ namespace GameStore.WinFormsApp
             gamesDataGridView.MultiSelect = false;
         }
 
-        /// <summary>
-        /// Обновляет данные в таблице и опционально восстанавливает выделение указанной строки.
-        /// </summary>
-        private void RefreshGrid(int? idToSelect = null)
+        /// <summary>
+        /// Обновляет данные в таблице и опционально восстанавливает выделение указанной строки.
+        /// </summary>
+        private void RefreshGrid(int? idToSelect = null)
         {
             gamesDataGridView.DataSource = null;
             gamesDataGridView.DataSource = _gameLogic.GetAllGames();
@@ -80,10 +90,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Очищает поля для ввода текста и сбрасывает состояние кнопок и выбора.
-        /// </summary>
-        private void ClearInputFields()
+        /// <summary>
+        /// Очищает поля для ввода текста и сбрасывает состояние кнопок и выбора.
+        /// </summary>
+        private void ClearInputFields()
         {
             txtTitle.Text = string.Empty;
             txtGenre.Text = string.Empty;
@@ -94,10 +104,10 @@ namespace GameStore.WinFormsApp
             btnDelete.Enabled = false;
         }
 
-        /// <summary>
-        /// Обрабатывает изменение выделенной строки в таблице для отображения данных в полях ввода.
-        /// </summary>
-        private void gamesDataGridView_SelectionChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает изменение выделенной строки в таблице для отображения данных в полях ввода.
+        /// </summary>
+        private void gamesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             if (gamesDataGridView.SelectedRows.Count > 0)
             {
@@ -111,10 +121,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Добавить" для создания новой игры.
-        /// </summary>
-        private void btnAdd_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Добавить" для создания новой игры.
+        /// </summary>
+        private void btnAdd_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTitle.Text) || string.IsNullOrWhiteSpace(txtGenre.Text))
             {
@@ -145,10 +155,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Изменить" для обновления данных выбранной игры.
-        /// </summary>
-        private void btnUpdate_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Изменить" для обновления данных выбранной игры.
+        /// </summary>
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (_selectedGame == null) return;
 
@@ -175,10 +185,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки "Удалить" для удаления выбранной игры.
-        /// </summary>
-        private void btnDelete_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки "Удалить" для удаления выбранной игры.
+        /// </summary>
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             if (_selectedGame == null) return;
             var confirmResult = MessageBox.Show($"Вы уверены, что хотите удалить игру '{_selectedGame.Title}'?",
@@ -190,10 +200,10 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки для группировки игр по жанру и вывода результата.
-        /// </summary>
-        private void btnGroup_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для группировки игр по жанру и вывода результата.
+        /// </summary>
+        private void btnGroup_Click(object sender, EventArgs e)
         {
             var groupedGames = _gameLogic.GroupGamesByGenre();
             resultsTextBox.Clear();
@@ -209,19 +219,19 @@ namespace GameStore.WinFormsApp
             }
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки для снятия выделения в таблице и очистки полей ввода.
-        /// </summary>
-        private void btnClearSelection_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для снятия выделения в таблице и очистки полей ввода.
+        /// </summary>
+        private void btnClearSelection_Click(object sender, EventArgs e)
         {
             gamesDataGridView.ClearSelection();
             ClearInputFields();
         }
 
-        /// <summary>
-        /// Обрабатывает нажатие кнопки для показа списка игр со скидкой.
-        /// </summary>
-        private void btnShowDiscounted_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Обрабатывает нажатие кнопки для показа списка игр со скидкой.
+        /// </summary>
+        private void btnShowDiscounted_Click(object sender, EventArgs e)
         {
             var discountedGames = _gameLogic.GetGamesWithDiscount();
             resultsTextBox.Clear();

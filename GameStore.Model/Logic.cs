@@ -4,108 +4,112 @@ using System.Linq;
 
 namespace GameStore.Model
 {
+    /// <summary>
+    /// Класс бизнес-логики для управления играми и выполнения CRUD-операций через репозиторий.
+    /// </summary>
     public class Logic
     {
-        private readonly List<Game> _games = [];
-        private int _nextId = 1;
+        private readonly IRepository<Game> _repository;
 
-        /// <summary>
-        /// Создает и добавляет новую игру в коллекцию. Реализует требование "Создание сущности".
-        /// </summary>
-        public Game CreateGame(string title, string genre, decimal price, decimal discountPercentage = 0)
+        /// <summary>
+        /// Инициализирует новый экземпляр класса Logic с указанным репозиторием.
+        /// </summary>
+        /// <param name="repository">Репозиторий для доступа к данным игр</param>
+        public Logic(IRepository<Game> repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        /// <summary>
+        /// Создает и добавляет новую игру в базу данных.
+        /// </summary>
+        public Game CreateGame(string title, string genre, decimal price, decimal discountPercentage = 0)
         {
             if (price < 0)
-            {
                 throw new ArgumentException("Цена не может быть отрицательной.", nameof(price));
-            }
             if (discountPercentage < 0 || discountPercentage > 100)
-            {
                 throw new ArgumentException("Процент скидки должен быть в диапазоне от 0 до 100.", nameof(discountPercentage));
-            }
 
             var game = new Game
             {
-                Id = _nextId++,
                 Title = title,
                 Genre = genre,
                 Price = price,
                 DiscountPercentage = discountPercentage
             };
-            _games.Add(game);
-            return game;
+            return _repository.Add(game);
         }
 
-        /// <summary>
-        /// Возвращает игру по ее уникальному идентификатору. Реализует требование "Чтение сущности".
-        /// </summary>
-        public Game? ReadGame(int id)
+        /// <summary>
+        /// Возвращает игру по ее уникальному идентификатору.
+        /// </summary>
+        public Game? ReadGame(int id)
         {
-            return _games.FirstOrDefault(g => g.Id == id);
+            return _repository.ReadById(id);
         }
 
-        /// <summary>
-        /// Возвращает список всех игр. Также относится к "Чтению сущности".
-        /// </summary>
-        public List<Game> GetAllGames()
+        /// <summary>
+        /// Возвращает список всех игр.
+        /// </summary>
+        public List<Game> GetAllGames()
         {
-            return new List<Game>(_games);
+            return _repository.ReadAll().ToList();
         }
 
-        /// <summary>
-        /// Обновляет данные существующей игры. Реализует требование "Изменение сущности".
-        /// </summary>
-        public bool UpdateGame(int id, string newTitle, string newGenre, decimal newPrice, decimal newDiscountPercentage)
+        /// <summary>
+        /// Обновляет данные существующей игры.
+        /// </summary>
+        public bool UpdateGame(int id, string newTitle, string newGenre, decimal newPrice, decimal newDiscountPercentage)
         {
             if (newPrice < 0)
-            {
                 throw new ArgumentException("Цена не может быть отрицательной.", nameof(newPrice));
-            }
             if (newDiscountPercentage < 0 || newDiscountPercentage > 100)
-            {
                 throw new ArgumentException("Процент скидки должен быть в диапазоне от 0 до 100.", nameof(newDiscountPercentage));
-            }
 
-            var game = ReadGame(id);
-            if (game != null)
-            {
-                game.Title = newTitle;
-                game.Genre = newGenre;
-                game.Price = newPrice;
-                game.DiscountPercentage = newDiscountPercentage;
-                return true;
-            }
-            return false;
+            var game = _repository.ReadById(id);
+            if (game == null)
+                return false;
+
+            game.Title = newTitle;
+            game.Genre = newGenre;
+            game.Price = newPrice;
+            game.DiscountPercentage = newDiscountPercentage;
+            _repository.Update(game);
+
+            return true;
         }
 
-        /// <summary>
-        /// Удаляет игру из коллекции по ее идентификатору. Реализует требование "Удаление сущности".
-        /// </summary>
-        public bool DeleteGame(int id)
+        /// <summary>
+        /// Удаляет игру из базы данных по ее идентификатору.
+        /// </summary>
+        public bool DeleteGame(int id)
         {
-            var game = ReadGame(id);
-            if (game != null)
-            {
-                _games.Remove(game);
-                return true;
-            }
-            return false;
+            var game = _repository.ReadById(id);
+            if (game == null)
+                return false;
+
+            _repository.Delete(id);
+            return true;
         }
 
-        /// <summary>
-        /// Бизнес-функция 1: Группирует все игры по жанрам.
-        /// </summary>
-        public Dictionary<string, List<Game>> GroupGamesByGenre()
+        /// <summary>
+        /// Группирует все игры по жанрам.
+        /// </summary>
+        public Dictionary<string, List<Game>> GroupGamesByGenre()
         {
-            return _games.GroupBy(g => g.Genre)
-                  .ToDictionary(g => g.Key, g => g.ToList());
+            return _repository.ReadAll()
+                .GroupBy(g => g.Genre)
+                .ToDictionary(g => g.Key, g => g.ToList());
         }
 
-        /// <summary>
-        /// Бизнес-функция 2: Возвращает список всех игр, на которые установлена скидка.
-        /// </summary>
-        public List<Game> GetGamesWithDiscount()
+        /// <summary>
+        /// Возвращает список всех игр, на которые установлена скидка.
+        /// </summary>
+        public List<Game> GetGamesWithDiscount()
         {
-            return _games.Where(g => g.DiscountPercentage > 0).ToList();
+            return _repository.ReadAll()
+                .Where(g => g.DiscountPercentage > 0)
+                .ToList();
         }
     }
 }
