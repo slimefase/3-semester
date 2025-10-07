@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.WinFormsApp", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.ConsoleApp", "..\GameStore.ConsoleApp\GameStore.ConsoleApp.csproj", "{5BD06977-3372-4F00-8DD0-03AA35C1A650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gamestore.DataAccessLayer", "..\DataAccessLayer\Gamestore.DataAccessLayer.csproj", "{DFB27E48-D729-44A5-B81D-DC2948F5D88A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.DataAccessLayer", "..\GameStore.DataAccessLayer\GameStore.DataAccessLayer.csproj", "{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{5BD06977-3372-4F00-8DD0-03AA35C1A650}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BD06977-3372-4F00-8DD0-03AA35C1A650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BD06977-3372-4F00-8DD0-03AA35C1A650}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFB27E48-D729-44A5-B81D-DC2948F5D88A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFB27E48-D729-44A5-B81D-DC2948F5D88A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFB27E48-D729-44A5-B81D-DC2948F5D88A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFB27E48-D729-44A5-B81D-DC2948F5D88A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

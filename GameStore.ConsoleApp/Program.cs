@@ -1,39 +1,23 @@
-﻿using GameStore.DataAccessLayer;
-using GameStore.Model;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
-using System.Linq;
+﻿using GameStore.Model;
+using GameStore.DataAccessLayer;
 
 namespace GameStore.ConsoleApp
 {
     internal class Program
     {
-        private static Logic gameLogic;
+        private static Logic logic = new Logic(new EntityRepository());
 
         static void Main(string[] args)
         {
-            string solutionRoot = GetSolutionRootDirectory();
-            string dbPath = Path.GetFullPath(Path.Combine(solutionRoot, "GameStoreDatabase.mdf"));
-
-            var connectionString = $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=MySharedGameStoreDB;Integrated Security=True;Connect Timeout=30";
-
-            InitializeDatabase(connectionString);
-            LoadInitialData();
-
             while (true)
             {
-                Console.WriteLine("\n------ Магазин игр Steam ------");
+                Console.WriteLine("------ Магазин игр ------");
                 Console.WriteLine("1. Показать все игры");
-                Console.WriteLine("2. Добавить новую игру");
-                Console.WriteLine("3. Изменить игру");
-                Console.WriteLine("4. Удалить игру");
-                Console.WriteLine("5. Сгруппировать игры по жанру");
-                Console.WriteLine("6. Показать все игры со скидкой");
+                Console.WriteLine("2. Добавить игру");
+                Console.WriteLine("3. Удалить игру");
+                Console.WriteLine("4. Изменить игру");
                 Console.WriteLine("0. Выход");
                 Console.Write("Выберите действие: ");
-
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -42,231 +26,107 @@ namespace GameStore.ConsoleApp
                         ShowAllGames();
                         break;
                     case "2":
-                        AddNewGame();
+                        AddGame();
                         break;
                     case "3":
-                        UpdateGameConsole();
-                        break;
-                    case "4":
                         DeleteGame();
                         break;
-                    case "5":
-                        ShowGamesGroupedByGenre();
-                        break;
-                    case "6":
-                        ShowDiscountedGames();
+                    case "4":
+                        UpdateGame();
                         break;
                     case "0":
                         return;
-                    default:
-                        Console.WriteLine("Неверный ввод. Пожалуйста, попробуйте снова.");
-                        break;
                 }
             }
         }
 
         /// <summary>
-        /// Инициализирует контекст базы данных и репозиторий.
+        /// Показать все игры.
         /// </summary>
-        /// <param name="connectionString">Строка подключения к базе данных.</param>
-        private static void InitializeDatabase(string connectionString)
+        static void ShowAllGames()
         {
-            var options = new DbContextOptionsBuilder<DBContext>()
-                .UseSqlServer(connectionString)
-                .Options;
-
-            using (var context = new DBContext(options))
-            {
-                try
-                {
-                    context.Database.EnsureCreated();
-                }
-                catch (SqlException ex)
-                {
-                    // Игнорируем ошибку, если база данных уже существует и прикреплена
-                    if (!ex.Message.Contains("уже существует") && !ex.Message.Contains("already exists"))
-                    {
-                        throw; // Если ошибка другая, ее нужно показать
-                    }
-                }
-            }
-
-            IRepository<Game> repository = new EntityRepository<Game>(new DBContext(options));
-            gameLogic = new Logic(repository);
-        }
-
-        /// <summary>
-        /// Загружает начальный набор данных, если база пуста.
-        /// </summary>
-        private static void LoadInitialData()
-        {
-            var existingGames = gameLogic.GetAllGames();
-            if (!existingGames.Any())
-            {
-                gameLogic.CreateGame("Stardew Valley", "Simulator", 299m, 15);
-                gameLogic.CreateGame("Hades", "Roguelike", 899m);
-                gameLogic.CreateGame("Factorio", "Simulator", 520m, 20);
-            }
-        }
-
-        /// <summary>
-        /// Выводит список всех игр в консоль.
-        /// </summary>
-        private static void ShowAllGames()
-        {
-            var games = gameLogic.GetAllGames();
-            Console.WriteLine("\n--- Список всех игр ---");
-            if (!games.Any())
-            {
-                Console.WriteLine("В магазине пока нет игр.");
-                return;
-            }
+            var games = logic.ReadAll();
             foreach (var game in games)
             {
-                string discountInfo = game.DiscountPercentage > 0 ? $" (Скидка {game.DiscountPercentage}%, Новая цена: {game.DiscountedPrice:F2} руб.)" : "";
-                Console.WriteLine($"ID: {game.Id}, {game.Title} ({game.Genre}) - {game.Price:F2} руб.{discountInfo}");
+                Console.WriteLine($"{game.Id}: {game.Title} | {game.Genre} | {game.Price} | {game.DiscountPercentage}%");
             }
         }
 
         /// <summary>
-        /// Запрашивает у пользователя данные для создания новой игры.
+        /// Добавить новую игру.
         /// </summary>
-        private static void AddNewGame()
+        static void AddGame()
         {
-            try
+            Console.Write("Название: ");
+            var title = Console.ReadLine();
+            Console.Write("Жанр: ");
+            var genre = Console.ReadLine();
+            decimal price;
+            while (true)
             {
-                Console.WriteLine("\n--- Добавление новой игры ---");
-
-                Console.Write("Введите название: ");
-                string title = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(title)) { Console.WriteLine("Ошибка: Название не может быть пустым."); return; }
-
-                Console.Write("Введите жанр: ");
-                string genre = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(genre)) { Console.WriteLine("Ошибка: Жанр не может быть пустым."); return; }
-
-                Console.Write("Введите цену: ");
-                if (!decimal.TryParse(Console.ReadLine(), out decimal price)) { Console.WriteLine("Ошибка: неверный формат цены."); return; }
-
-                Console.Write("Введите скидку в % (или 0, если нет): ");
-                if (!decimal.TryParse(Console.ReadLine(), out decimal discount)) { Console.WriteLine("Ошибка: неверный формат скидки."); return; }
-
-                var newGame = gameLogic.CreateGame(title, genre, price, discount);
-                Console.WriteLine($"Игра '{newGame.Title}' успешно добавлена!");
+                Console.Write("Цена: ");
+                if (decimal.TryParse(Console.ReadLine(), out price)) break;
+                Console.WriteLine("Введите корректное число!");
             }
-            catch (ArgumentException ex) { Console.WriteLine($"Ошибка валидации: {ex.Message}"); }
-            catch (Exception ex) { Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}"); }
+
+            decimal discount;
+            while (true)
+            {
+                Console.Write("Скидка (%): ");
+                if (decimal.TryParse(Console.ReadLine(), out discount)) break;
+                Console.WriteLine("Введите корректное число!");
+            }
+
+
+            var game = new Game { Title = title, Genre = genre, Price = price, DiscountPercentage = discount };
+            logic.Add(game);
+            Console.WriteLine("Игра добавлена.");
         }
 
         /// <summary>
-        /// Запрашивает у пользователя данные для изменения существующей игры.
+        /// Удалить игру.
         /// </summary>
-        private static void UpdateGameConsole()
+        static void DeleteGame()
         {
-            try
+            Console.Write("Id для удаления: ");
+            var id = int.Parse(Console.ReadLine());
+            var game = logic.ReadById(id);
+            if (game != null)
             {
-                Console.Write("\nВведите ID игры для изменения: ");
-                if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Ошибка: ID должен быть числом."); return; }
-
-                var game = gameLogic.ReadGame(id);
-                if (game == null) { Console.WriteLine($"Игра с ID {id} не найдена."); return; }
-
-                Console.WriteLine($"--- Изменение игры: {game.Title} ---");
-
-                Console.Write($"Новое название (Enter, чтобы оставить '{game.Title}'): ");
-                string newTitle = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(newTitle)) newTitle = game.Title;
-
-                Console.Write($"Новый жанр (Enter, чтобы оставить '{game.Genre}'): ");
-                string newGenre = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(newGenre)) newGenre = game.Genre;
-
-                Console.Write($"Новая цена (Enter, чтобы оставить '{game.Price:F2}'): ");
-                string priceStr = Console.ReadLine();
-                if (!decimal.TryParse(priceStr, out decimal newPrice)) newPrice = game.Price;
-
-                Console.Write($"Новая скидка в % (Enter, чтобы оставить '{game.DiscountPercentage}'): ");
-                string discountStr = Console.ReadLine();
-                if (!decimal.TryParse(discountStr, out decimal newDiscount)) newDiscount = game.DiscountPercentage;
-
-                if (gameLogic.UpdateGame(id, newTitle, newGenre, newPrice, newDiscount))
-                {
-                    Console.WriteLine("Игра успешно обновлена!");
-                }
+                logic.Delete(game);
+                Console.WriteLine("Игра удалена.");
             }
-            catch (ArgumentException ex) { Console.WriteLine($"Ошибка валидации: {ex.Message}"); }
-            catch (Exception ex) { Console.WriteLine($"Произошла ошибка: {ex.Message}"); }
-        }
-
-        /// <summary>
-        /// Запрашивает у пользователя ID для удаления игры.
-        /// </summary>
-        private static void DeleteGame()
-        {
-            try
+            else
             {
-                Console.WriteLine("\n--- Удаление игры ---");
-                Console.Write("Введите ID игры для удаления: ");
-                int id = int.Parse(Console.ReadLine());
-
-                if (gameLogic.DeleteGame(id)) { Console.WriteLine($"Игра с ID {id} успешно удалена."); }
-                else { Console.WriteLine($"Игра с ID {id} не найдена."); }
-            }
-            catch (FormatException) { Console.WriteLine("Ошибка: ID должен быть числом."); }
-        }
-
-        /// <summary>
-        /// Выводит в консоль игры, сгруппированные по жанру.
-        /// </summary>
-        private static void ShowGamesGroupedByGenre()
-        {
-            var groupedGames = gameLogic.GroupGamesByGenre();
-            Console.WriteLine("\n--- Группировка по жанрам ---");
-            foreach (var group in groupedGames)
-            {
-                Console.WriteLine($"\nЖанр: {group.Key}");
-                foreach (var game in group.Value)
-                {
-                    Console.WriteLine($"\t- {game.Title}");
-                }
+                Console.WriteLine("Игра не найдена.");
             }
         }
 
         /// <summary>
-        /// Выводит в консоль список игр, на которые действует скидка.
+        /// Обновить игру.
         /// </summary>
-        private static void ShowDiscountedGames()
+        static void UpdateGame()
         {
-            var discountedGames = gameLogic.GetGamesWithDiscount();
-            Console.WriteLine("\n--- Игры со скидкой ---");
-            if (!discountedGames.Any())
+            Console.Write("Id для редактирования: ");
+            var id = int.Parse(Console.ReadLine());
+            var game = logic.ReadById(id);
+            if (game == null)
             {
-                Console.WriteLine("На данный момент игр со скидкой нет.");
+                Console.WriteLine("Игра не найдена.");
                 return;
             }
 
-            foreach (var game in discountedGames)
-            {
-                Console.WriteLine($"- {game.Title}, скидка {game.DiscountPercentage}%. Старая цена: {game.Price:F2} руб. -> Новая цена: {game.DiscountedPrice:F2} руб.");
-            }
-        }
+            Console.Write("Новое название: ");
+            game.Title = Console.ReadLine();
+            Console.Write("Новый жанр: ");
+            game.Genre = Console.ReadLine();
+            Console.Write("Новая цена: ");
+            game.Price = decimal.Parse(Console.ReadLine());
+            Console.Write("Новая скидка (%): ");
+            game.DiscountPercentage = decimal.Parse(Console.ReadLine());
 
-        /// <summary>
-        /// Метод для определения корневой директории решения (папки 3-semester).
-        /// Предполагается, что приложение запускается внутри структуры решения.
-        /// </summary>
-        /// <returns>Полный путь к корню решения</returns>
-        private static string GetSolutionRootDirectory()
-        {
-            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var directory = new DirectoryInfo(currentDirectory);
-            while (directory != null && directory.Name.ToLower() != "3-semester")
-            {
-                directory = directory.Parent;
-            }
-            if (directory == null)
-                throw new DirectoryNotFoundException("Корневая папка решения '3-semester' не найдена.");
-            return directory.FullName;
+            logic.Update(game);
+            Console.WriteLine("Игра обновлена.");
         }
     }
 }
