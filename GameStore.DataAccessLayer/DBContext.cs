@@ -9,9 +9,7 @@ namespace GameStore.DataAccessLayer
 
         public DbContextGameStore()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectRoot = Path.GetFullPath(Path.Combine(baseDirectory, @"..\..\..\..\GameStore.DataAccessLayer"));
-            AppDomain.CurrentDomain.SetData("DataDirectory", projectRoot);
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
