@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GameStore.Model;
+using GameStore.Entity;
 
 namespace GameStore.DataAccessLayer
 {
@@ -21,6 +21,4 @@ namespace GameStore.DataAccessLayer
             optionsBuilder.UseSqlServer($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=GameStoreDB;Integrated Security=True");
         }
     }
-
 }
-

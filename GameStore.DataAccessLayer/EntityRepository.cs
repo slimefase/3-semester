@@ -1,4 +1,4 @@
-﻿using GameStore.Model;
+﻿using GameStore.Entity;
 
 namespace GameStore.DataAccessLayer
 {
@@ -6,6 +6,9 @@ namespace GameStore.DataAccessLayer
     {
         private readonly DbContextGameStore _context;
 
+        /// <summary>
+        /// Инициализирует репозиторий и обеспечивает создание базы данных.
+        /// </summary>
         public EntityRepository()
         {
             _context = new DbContextGameStore();
@@ -13,8 +16,9 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Добавить игру через EF.
+        /// Добавляет игру в базу данных.
         /// </summary>
+        /// <param name="game">Объект игры для добавления.</param>
         public void Add(Game game)
         {
             _context.Games.Add(game);
@@ -22,8 +26,9 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Удалить игру через EF.
+        /// Удаляет игру из базы данных.
         /// </summary>
+        /// <param name="game">Объект игры для удаления.</param>
         public void Delete(Game game)
         {
             _context.Games.Remove(game);
@@ -31,24 +36,28 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Получить все игры через EF.
+        /// Возвращает список всех игр.
         /// </summary>
+        /// <returns>Список игр из базы данных.</returns>
         public List<Game> ReadAll()
         {
             return _context.Games.ToList();
         }
 
         /// <summary>
-        /// Получить одну игру по Id через EF.
+        /// Находит игру по её идентификатору.
         /// </summary>
+        /// <param name="id">Идентификатор игры.</param>
+        /// <returns>Найденная игра или null, если не найдена.</returns>
         public Game ReadById(int id)
         {
             return _context.Games.Find(id);
         }
 
         /// <summary>
-        /// Обновить игру через EF.
+        /// Обновляет данные существующей игры.
         /// </summary>
+        /// <param name="game">Объект игры с обновлёнными данными.</param>
         public void Update(Game game)
         {
             _context.Games.Update(game);

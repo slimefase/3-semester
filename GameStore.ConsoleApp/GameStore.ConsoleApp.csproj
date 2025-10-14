@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
@@ -16,8 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GameStore.BusinessLogic\GameStore.BusinessLogic.csproj" />
     <ProjectReference Include="..\GameStore.DataAccessLayer\GameStore.DataAccessLayer.csproj" />
-    <ProjectReference Include="..\GameStore.Model\GameStore.Model.csproj" />
+    <ProjectReference Include="..\GameStore.Entity\GameStore.Entity.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,7 @@
-﻿using GameStore.Model;
+﻿using System;
+using GameStore.BusinessLogic;
 using GameStore.DataAccessLayer;
+using GameStore.Entity;
 
 namespace GameStore.ConsoleApp
 {

@@ -1,88 +1,75 @@
-﻿using GameStore.Model;
-using System.Data.SQLite;
+﻿using Microsoft.Data.SqlClient;
 using Dapper;
+using GameStore.Entity;
 
 namespace GameStore.DataAccessLayer
 {
+    /// <summary>
+    /// Репозиторий для работы с играми через Dapper
+    /// </summary>
     public class DapperRepository : IRepository
     {
-        private readonly string _connectionString = "Data Source=games.db";
+        private readonly string _connectionString = @"Server=(localdb)\mssqllocaldb;Database=GameStoreDB;Trusted_Connection=True;";
 
         /// <summary>
-        /// Инициализирует репозиторий и создает таблицу если необходимо.
+        /// Добавляет новую игру в базу данных
         /// </summary>
-        public DapperRepository()
+        /// <param name="entity">Игра для добавления</param>
+        public void Add(Game entity)
         {
-            InitializeDatabase();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Execute("INSERT INTO Games (Title, Genre, Price, DiscountPercentage) VALUES (@Title, @Genre, @Price, @DiscountPercentage)", entity);
+            }
         }
 
         /// <summary>
-        /// Создает таблицу в базе данных если она не существует.
+        /// Удаляет игру из базы данных
         /// </summary>
-        private void InitializeDatabase()
+        /// <param name="entity">Игра для удаления</param>
+        public void Delete(Game entity)
         {
-            using var connection = new SQLiteConnection(_connectionString);
-            connection.Execute(@"
-                CREATE TABLE IF NOT EXISTS Games (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Title TEXT NOT NULL,
-                    Genre TEXT NOT NULL,
-                    Price DECIMAL(18,2) NOT NULL,
-                    DiscountPercentage DECIMAL(5,2) NOT NULL
-                )");
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Execute("DELETE FROM Games WHERE Id = @Id", new { entity.Id });
+            }
         }
 
         /// <summary>
-        /// Добавляет новую игру в базу данных через Dapper.
+        /// Получает все игры из базы данных
         /// </summary>
-        public void Add(Game game)
-        {
-            using var connection = new SQLiteConnection(_connectionString);
-            var sql = @"INSERT INTO Games (Title, Genre, Price, DiscountPercentage) 
-                       VALUES (@Title, @Genre, @Price, @DiscountPercentage)";
-            connection.Execute(sql, game);
-        }
-
-        /// <summary>
-        /// Удаляет игру из базы данных через Dapper.
-        /// </summary>
-        public void Delete(Game game)
-        {
-            using var connection = new SQLiteConnection(_connectionString);
-            var sql = "DELETE FROM Games WHERE Id = @Id";
-            connection.Execute(sql, new { Id = game.Id });
-        }
-
-        /// <summary>
-        /// Возвращает все игры из базы данных через Dapper.
-        /// </summary>
+        /// <returns>Список всех игр</returns>
         public List<Game> ReadAll()
         {
-            using var connection = new SQLiteConnection(_connectionString);
-            var sql = "SELECT * FROM Games";
-            return connection.Query<Game>(sql).ToList();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return connection.Query<Game>("SELECT * FROM Games").ToList();
+            }
         }
 
         /// <summary>
-        /// Возвращает игру по ID через Dapper.
+        /// Получает игру по идентификатору
         /// </summary>
+        /// <param name="id">Идентификатор игры</param>
+        /// <returns>Найденная игра или null</returns>
         public Game ReadById(int id)
         {
-            using var connection = new SQLiteConnection(_connectionString);
-            var sql = "SELECT * FROM Games WHERE Id = @Id";
-            return connection.QueryFirstOrDefault<Game>(sql, new { Id = id });
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return connection.QueryFirstOrDefault<Game>("SELECT * FROM Games WHERE Id = @Id", new { Id = id });
+            }
         }
 
         /// <summary>
-        /// Обновляет данные игры в базе данных через Dapper.
+        /// Обновляет информацию об игре
         /// </summary>
-        public void Update(Game game)
+        /// <param name="entity">Игра для обновления</param>
+        public void Update(Game entity)
         {
-            using var connection = new SQLiteConnection(_connectionString);
-            var sql = @"UPDATE Games 
-                       SET Title = @Title, Genre = @Genre, Price = @Price, DiscountPercentage = @DiscountPercentage 
-                       WHERE Id = @Id";
-            connection.Execute(sql, game);
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Execute("UPDATE Games SET Title = @Title, Genre = @Genre, Price = @Price, DiscountPercentage = @DiscountPercentage WHERE Id = @Id", entity);
+            }
         }
     }
 }

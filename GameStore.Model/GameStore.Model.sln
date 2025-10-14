@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.Model", "GameStore.Model.csproj", "{2B2996BF-330D-43B3-AC4D-28B89A075350}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.WinFormsApp", "..\GameStore.WinFormsApp\GameStore.WinFormsApp.csproj", "{0233F6AA-4032-40A4-B6DC-CCCD5B0FB144}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.ConsoleApp", "..\GameStore.ConsoleApp\GameStore.ConsoleApp.csproj", "{5BD06977-3372-4F00-8DD0-03AA35C1A650}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.DataAccessLayer", "..\GameStore.DataAccessLayer\GameStore.DataAccessLayer.csproj", "{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.Entity", "..\GameStore.Entity\GameStore.Entity.csproj", "{FC4D528C-68A9-477C-AB8A-567BCC3D3CCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.BusinessLogic", "..\GameStore.BusinessLogic\GameStore.BusinessLogic.csproj", "{834A7CBD-DE04-4BB0-B869-054665960FEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2B2996BF-330D-43B3-AC4D-28B89A075350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B2996BF-330D-43B3-AC4D-28B89A075350}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B2996BF-330D-43B3-AC4D-28B89A075350}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B2996BF-330D-43B3-AC4D-28B89A075350}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0233F6AA-4032-40A4-B6DC-CCCD5B0FB144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0233F6AA-4032-40A4-B6DC-CCCD5B0FB144}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0233F6AA-4032-40A4-B6DC-CCCD5B0FB144}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B6197BB-6AA7-41B9-1454-4A1F49196D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC4D528C-68A9-477C-AB8A-567BCC3D3CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC4D528C-68A9-477C-AB8A-567BCC3D3CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC4D528C-68A9-477C-AB8A-567BCC3D3CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4D528C-68A9-477C-AB8A-567BCC3D3CCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{834A7CBD-DE04-4BB0-B869-054665960FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{834A7CBD-DE04-4BB0-B869-054665960FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{834A7CBD-DE04-4BB0-B869-054665960FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{834A7CBD-DE04-4BB0-B869-054665960FEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,10 @@
-﻿using System.Data;
-using GameStore.Model;
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using GameStore.BusinessLogic;
 using GameStore.DataAccessLayer;
+using GameStore.Entity;
+
 
 namespace GameStore.WinFormsApp
 {
