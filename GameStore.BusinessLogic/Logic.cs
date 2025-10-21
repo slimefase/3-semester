@@ -6,9 +6,9 @@ namespace GameStore.BusinessLogic
 {
     public class Logic
     {
-        private readonly IRepository _repository;
+        private readonly IGameRepository _repository;
 
-        public Logic(IRepository repo)
+        public Logic(IGameRepository repo)
         {
             _repository = repo;
         }

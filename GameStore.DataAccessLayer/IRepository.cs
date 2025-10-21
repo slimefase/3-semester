@@ -1,42 +1,42 @@
-﻿using GameStore.Entity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GameStore.DataAccessLayer
 {
     /// <summary>
-    /// Определяет базовые операции для работы с хранилищем данных игр.
+    /// Определяет базовые операции для работы с хранилищем данных.
     /// </summary>
-    public interface IRepository
+    /// <typeparam name="T">Тип сущности.</typeparam>
+    public interface IRepository<T>
     {
         /// <summary>
-        /// Добавляет новую игру в хранилище.
+        /// Добавляет сущность в хранилище.
         /// </summary>
-        /// <param name="game">Объект игры для добавления.</param>
-        void Add(Game game);
+        /// <param name="entity">Добавляемая сущность.</param>
+        void Add(T entity);
 
         /// <summary>
-        /// Удаляет игру из хранилища.
+        /// Удаляет сущность из хранилища.
         /// </summary>
-        /// <param name="game">Объект игры для удаления.</param>
-        void Delete(Game game);
+        /// <param name="entity">Удаляемая сущность.</param>
+        void Delete(T entity);
 
         /// <summary>
-        /// Возвращает все игры из хранилища.
+        /// Возвращает все сущности из хранилища.
         /// </summary>
-        /// <returns>Список всех игр.</returns>
-        List<Game> ReadAll();
+        /// <returns>Список всех сущностей.</returns>
+        List<T> ReadAll();
 
         /// <summary>
-        /// Возвращает игру по её идентификатору.
+        /// Возвращает сущность по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор игры.</param>
-        /// <returns>Объект игры, если найден, иначе null.</returns>
-        Game ReadById(int id);
+        /// <param name="id">Идентификатор сущности.</param>
+        /// <returns>Найденная сущность или null.</returns>
+        T ReadById(int id);
 
         /// <summary>
-        /// Обновляет данные существующей игры.
+        /// Обновляет данные сущности.
         /// </summary>
-        /// <param name="game">Объект игры с обновлёнными данными.</param>
-        void Update(Game game);
+        /// <param name="entity">Сущность с обновлёнными данными.</param>
+        void Update(T entity);
     }
 }

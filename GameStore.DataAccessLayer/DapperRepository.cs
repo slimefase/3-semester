@@ -7,7 +7,7 @@ namespace GameStore.DataAccessLayer
     /// <summary>
     /// Репозиторий для работы с играми через Dapper
     /// </summary>
-    public class DapperRepository : IRepository
+    public class DapperRepository : IRepository<Game>
     {
         private readonly string _connectionString = @"Server=(localdb)\mssqllocaldb;Database=GameStoreDB;Trusted_Connection=True;";
 

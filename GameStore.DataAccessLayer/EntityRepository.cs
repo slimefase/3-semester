@@ -2,7 +2,10 @@
 
 namespace GameStore.DataAccessLayer
 {
-    public class EntityRepository : IRepository
+    /// <summary>
+    /// Реализация репозитория игр на основе Entity Framework Core.
+    /// </summary>
+    public class EntityRepository : IGameRepository
     {
         private readonly DbContextGameStore _context;
 
