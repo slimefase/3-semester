@@ -1,6 +1,5 @@
 ﻿using GameStore.Entity;
 using GameStore.DataAccessLayer;
-using System.Collections.Generic;
 
 namespace GameStore.BusinessLogic
 {

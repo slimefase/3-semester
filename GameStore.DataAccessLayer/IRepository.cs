@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GameStore.DataAccessLayer
+﻿namespace GameStore.DataAccessLayer
 {
     /// <summary>
     /// Определяет базовые операции для работы с хранилищем данных.

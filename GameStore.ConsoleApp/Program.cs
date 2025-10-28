@@ -1,15 +1,25 @@
-﻿using System;
-using GameStore.BusinessLogic;
-using GameStore.DataAccessLayer;
+﻿using GameStore.BusinessLogic;
 using GameStore.Entity;
+using Ninject;
 
 namespace GameStore.ConsoleApp
 {
     internal class Program
     {
-        private static Logic logic = new Logic(new EntityRepository());
+        private static Logic logic;
 
         static void Main(string[] args)
+        {
+            IKernel kernel = new StandardKernel(new SimpleConfigModule());
+            logic = kernel.Get<Logic>();
+
+            RunMenu();
+        }
+
+        /// <summary>
+        /// Основное меню консольного приложения.
+        /// </summary>
+        static void RunMenu()
         {
             while (true)
             {
@@ -24,20 +34,11 @@ namespace GameStore.ConsoleApp
 
                 switch (choice)
                 {
-                    case "1":
-                        ShowAllGames();
-                        break;
-                    case "2":
-                        AddGame();
-                        break;
-                    case "3":
-                        DeleteGame();
-                        break;
-                    case "4":
-                        UpdateGame();
-                        break;
-                    case "0":
-                        return;
+                    case "1": ShowAllGames(); break;
+                    case "2": AddGame(); break;
+                    case "3": DeleteGame(); break;
+                    case "4": UpdateGame(); break;
+                    case "0": return;
                 }
             }
         }
@@ -48,14 +49,12 @@ namespace GameStore.ConsoleApp
         static void ShowAllGames()
         {
             var games = logic.ReadAll();
-            foreach (var game in games)
-            {
-                Console.WriteLine($"{game.Id}: {game.Title} | {game.Genre} | {game.Price} | {game.DiscountPercentage}%");
-            }
+            foreach (var g in games)
+                Console.WriteLine($"{g.Id}: {g.Title} | {g.Genre} | {g.Price} | {g.DiscountPercentage}%");
         }
 
         /// <summary>
-        /// Добавить новую игру.
+        /// Добавить игру.
         /// </summary>
         static void AddGame()
         {
@@ -63,25 +62,12 @@ namespace GameStore.ConsoleApp
             var title = Console.ReadLine();
             Console.Write("Жанр: ");
             var genre = Console.ReadLine();
-            decimal price;
-            while (true)
-            {
-                Console.Write("Цена: ");
-                if (decimal.TryParse(Console.ReadLine(), out price)) break;
-                Console.WriteLine("Введите корректное число!");
-            }
+            Console.Write("Цена: ");
+            var price = decimal.Parse(Console.ReadLine());
+            Console.Write("Скидка (%): ");
+            var discount = decimal.Parse(Console.ReadLine());
 
-            decimal discount;
-            while (true)
-            {
-                Console.Write("Скидка (%): ");
-                if (decimal.TryParse(Console.ReadLine(), out discount)) break;
-                Console.WriteLine("Введите корректное число!");
-            }
-
-
-            var game = new Game { Title = title, Genre = genre, Price = price, DiscountPercentage = discount };
-            logic.Add(game);
+            logic.Add(new Game { Title = title, Genre = genre, Price = price, DiscountPercentage = discount });
             Console.WriteLine("Игра добавлена.");
         }
 
@@ -93,15 +79,13 @@ namespace GameStore.ConsoleApp
             Console.Write("Id для удаления: ");
             var id = int.Parse(Console.ReadLine());
             var game = logic.ReadById(id);
-            if (game != null)
-            {
-                logic.Delete(game);
-                Console.WriteLine("Игра удалена.");
-            }
-            else
+            if (game == null)
             {
                 Console.WriteLine("Игра не найдена.");
+                return;
             }
+            logic.Delete(game);
+            Console.WriteLine("Игра удалена.");
         }
 
         /// <summary>

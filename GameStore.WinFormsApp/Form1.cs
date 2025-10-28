@@ -1,21 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-using GameStore.BusinessLogic;
-using GameStore.DataAccessLayer;
+﻿using GameStore.BusinessLogic;
 using GameStore.Entity;
+using Ninject;
 
 
 namespace GameStore.WinFormsApp
 {
     public partial class Form1 : Form
     {
-        private readonly Logic logic = new Logic(new EntityRepository());
+        private readonly Logic logic;
         private int? selectedGameId = null;
 
         public Form1()
         {
             InitializeComponent();
+            IKernel kernel = new StandardKernel(new SimpleConfigModule());
+            logic = kernel.Get<Logic>();
         }
 
         /// <summary>
