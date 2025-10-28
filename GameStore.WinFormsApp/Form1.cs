@@ -127,10 +127,10 @@ namespace GameStore.WinFormsApp
         /// </summary>
         private void btnShowDiscounted_Click(object sender, EventArgs e)
         {
-            var discounted = logic.ReadAll().Where(g => g.DiscountPercentage > 0).ToList();
+            var discounted = logic.GetDiscountedGames();
             if (discounted.Count == 0)
             {
-                resultsTextBox.Text = "Нет игр со скидкой";
+                resultsTextBox.Text = "Нет игр со скидкой.";
             }
             else
             {
@@ -144,17 +144,15 @@ namespace GameStore.WinFormsApp
         /// </summary>
         private void btnGroup_Click(object sender, EventArgs e)
         {
-            var games = logic.ReadAll();
-            if (games.Count == 0)
+            var grouped = logic.GroupByGenre();
+            if (grouped.Count == 0)
             {
                 resultsTextBox.Text = "Нет данных для группировки.";
                 return;
             }
 
-            var grouped = games.GroupBy(g => g.Genre)
-                .Select(g => $"{g.Key}: {string.Join(", ", g.Select(x => x.Title))}");
-
-            resultsTextBox.Text = string.Join(Environment.NewLine, grouped);
+            resultsTextBox.Text = string.Join(Environment.NewLine,
+                grouped.Select(g => $"{g.Key}: {string.Join(", ", g.Value.Select(x => x.Title))}"));
         }
 
         /// <summary>
