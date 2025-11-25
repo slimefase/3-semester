@@ -1,53 +1,83 @@
 ﻿using GameStore.BusinessLogic;
 using GameStore.Entity;
+using GameStore.Shared;
 using Ninject;
-
 
 namespace GameStore.WinFormsApp
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IView
     {
-        private readonly Logic logic;
-        private int? selectedGameId = null;
+        private Presenter _presenter;
+        private int? _selectedGameId = null;
+
+        public event EventHandler AddClicked;
+        public event EventHandler UpdateClicked;
+        public event EventHandler DeleteClicked;
+        public event EventHandler ClearSelectionClicked;
+        public event EventHandler ShowDiscountedClicked;
+        public event EventHandler GroupByGenreClicked;
+        public event EventHandler SelectionChanged;
 
         public Form1()
         {
             InitializeComponent();
             IKernel kernel = new StandardKernel(new SimpleConfigModule());
-            logic = kernel.Get<Logic>();
+            var logic = kernel.Get<Logic>();
+            _presenter = new Presenter(this, logic);
         }
 
         /// <summary>
-        /// Загрузка данных в таблицу при запуске.
+        /// Загрузка данных при старте формы
         /// </summary>
         private void Form1_Load(object sender, EventArgs e)
         {
-            RefreshGames();
+            // Начальные действия выполняет Presenter
         }
 
         /// <summary>
-        /// Обновить таблицу игр и очистить поля.
+        /// Отобразить список игр в таблице
         /// </summary>
-        private void RefreshGames()
+        public void DisplayGames(List<Game> games)
         {
-            var games = logic.ReadAll();
-            gamesDataGridView.DataSource = games.Select(g => new {
+            gamesDataGridView.DataSource = games.Select(g => new
+            {
                 g.Id,
                 g.Title,
                 g.Genre,
                 g.Price,
                 g.DiscountPercentage
             }).ToList();
-
-            ClearEditor();
+            gamesDataGridView.ClearSelection();
         }
 
         /// <summary>
-        /// Очистить форму редактирования и снять выделение.
+        /// Отобразить резултатирующий текст
         /// </summary>
-        private void ClearEditor()
+        public void DisplayResults(string text)
         {
-            selectedGameId = null;
+            resultsTextBox.Text = text;
+        }
+
+        /// <summary>
+        /// Заполнить поля редактора из объекта игры
+        /// </summary>
+        public void SetEditorFields(Game game)
+        {
+            _selectedGameId = game.Id;
+            txtTitle.Text = game.Title;
+            txtGenre.Text = game.Genre;
+            txtPrice.Text = game.Price.ToString();
+            txtDiscount.Text = game.DiscountPercentage.ToString();
+            btnUpdate.Enabled = true;
+            btnDelete.Enabled = true;
+        }
+
+        /// <summary>
+        /// Очистить поля редактора
+        /// </summary>
+        public void ClearEditor()
+        {
+            _selectedGameId = null;
             txtTitle.Text = "";
             txtGenre.Text = "";
             txtPrice.Text = "";
@@ -58,124 +88,107 @@ namespace GameStore.WinFormsApp
         }
 
         /// <summary>
-        /// Добавить новую игру.
+        /// Заголовок из поля ввода
+        /// </summary>
+        public string Title => txtTitle.Text;
+
+        /// <summary>
+        /// Жанр из поля ввода
+        /// </summary>
+        public string Genre => txtGenre.Text;
+
+        /// <summary>
+        /// Цена из поля ввода
+        /// </summary>
+        public decimal Price
+        {
+            get
+            {
+                if (decimal.TryParse(txtPrice.Text, out var p)) return p;
+                return 0m;
+            }
+        }
+
+        /// <summary>
+        /// Скидка из поля ввода
+        /// </summary>
+        public decimal Discount
+        {
+            get
+            {
+                if (decimal.TryParse(txtDiscount.Text, out var d)) return d;
+                return 0m;
+            }
+        }
+
+        /// <summary>
+        /// Идентификатор выбранной игры
+        /// </summary>
+        public int? SelectedId => _selectedGameId;
+
+        /// <summary>
+        /// Обработчик кнопки добавить
         /// </summary>
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtTitle.Text) ||
-                string.IsNullOrWhiteSpace(txtGenre.Text) ||
-                !decimal.TryParse(txtPrice.Text, out var price) ||
-                !decimal.TryParse(txtDiscount.Text, out var discount))
-            {
-                MessageBox.Show("Заполните все поля корректно!");
-                return;
-            }
-
-            var game = new Game
-            {
-                Title = txtTitle.Text,
-                Genre = txtGenre.Text,
-                Price = price,
-                DiscountPercentage = discount
-            };
-
-            logic.Add(game);
-            RefreshGames();
+            AddClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Изменить выбранную игру.
+        /// Обработчик кнопки изменить
         /// </summary>
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (selectedGameId == null) return;
-            var game = logic.ReadById(selectedGameId.Value);
-            if (game == null) return;
-
-            game.Title = txtTitle.Text;
-            game.Genre = txtGenre.Text;
-            if (decimal.TryParse(txtPrice.Text, out var price)) game.Price = price;
-            if (decimal.TryParse(txtDiscount.Text, out var discount)) game.DiscountPercentage = discount;
-
-            logic.Update(game);
-            RefreshGames();
+            UpdateClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Удалить выбранную игру.
+        /// Обработчик кнопки удалить
         /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (selectedGameId == null) return;
-            var game = logic.ReadById(selectedGameId.Value);
-            if (game == null) return;
-
-            logic.Delete(game);
-            RefreshGames();
+            DeleteClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Снять выделение.
+        /// Обработчик кнопки снять выделение
         /// </summary>
         private void btnClearSelection_Click(object sender, EventArgs e)
         {
-            ClearEditor();
+            ClearSelectionClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Выводит только игры со скидкой.
+        /// Обработчик кнопки показать игры со скидкой
         /// </summary>
         private void btnShowDiscounted_Click(object sender, EventArgs e)
         {
-            var discounted = logic.GetDiscountedGames();
-            if (discounted.Count == 0)
-            {
-                resultsTextBox.Text = "Нет игр со скидкой.";
-            }
-            else
-            {
-                resultsTextBox.Text = string.Join(Environment.NewLine,
-                    discounted.Select(g => $"{g.Title} — {g.DiscountPercentage}%"));
-            }
+            ShowDiscountedClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Группирует игры по жанру.
+        /// Обработчик кнопки сгруппировать
         /// </summary>
         private void btnGroup_Click(object sender, EventArgs e)
         {
-            var grouped = logic.GroupByGenre();
-            if (grouped.Count == 0)
-            {
-                resultsTextBox.Text = "Нет данных для группировки.";
-                return;
-            }
-
-            resultsTextBox.Text = string.Join(Environment.NewLine,
-                grouped.Select(g => $"{g.Key}: {string.Join(", ", g.Value.Select(x => x.Title))}"));
+            GroupByGenreClicked?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Заполняет редактор при клике по строке в таблице.
+        /// Обработчик изменения выделения в таблице — обновляет SelectedId и уведомляет Presenter
         /// </summary>
         private void gamesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             if (gamesDataGridView.SelectedRows.Count == 0)
+            {
+                _selectedGameId = null;
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
                 return;
+            }
 
             var row = gamesDataGridView.SelectedRows[0];
-            selectedGameId = Convert.ToInt32(row.Cells["Id"].Value);
-
-            var game = logic.ReadById(selectedGameId.Value);
-            if (game != null)
-            {
-                txtTitle.Text = game.Title;
-                txtGenre.Text = game.Genre;
-                txtPrice.Text = game.Price.ToString();
-                txtDiscount.Text = game.DiscountPercentage.ToString();
-                btnUpdate.Enabled = true;
-                btnDelete.Enabled = true;
-            }
+            _selectedGameId = Convert.ToInt32(row.Cells["Id"].Value);
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

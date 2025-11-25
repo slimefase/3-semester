@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GameStore.DataAccessLayer\GameStore.DataAccessLayer.csproj" />
     <ProjectReference Include="..\GameStore.Entity\GameStore.Entity.csproj" />
+    <ProjectReference Include="..\GameStore.Model\GameStore.Shared\GameStore.Shared.csproj" />
   </ItemGroup>
 
 </Project>

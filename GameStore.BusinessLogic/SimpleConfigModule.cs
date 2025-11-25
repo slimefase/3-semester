@@ -8,7 +8,7 @@ namespace GameStore.BusinessLogic
     public class SimpleConfigModule : NinjectModule
     {
         /// <summary>
-        /// Регистрирует зависимости для DI-контейнера.
+        /// Регистрирует зависимости для DI-контейнера
         /// </summary>
         public override void Load()
         {

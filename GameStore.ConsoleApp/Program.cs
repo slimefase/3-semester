@@ -17,7 +17,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Основное меню консольного приложения.
+        /// Основное меню консольного приложения
         /// </summary>
         static void RunMenu()
         {
@@ -57,7 +57,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Показать все игры.
+        /// Показать все игры
         /// </summary>
         static void ShowAllGames()
         {
@@ -73,7 +73,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Добавить игру.
+        /// Добавить игру
         /// </summary>
         static void AddGame()
         {
@@ -91,7 +91,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Удалить игру.
+        /// Удалить игру
         /// </summary>
         static void DeleteGame()
         {
@@ -109,7 +109,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Обновить игру.
+        /// Обновить игру
         /// </summary>
         static void UpdateGame()
         {
@@ -136,7 +136,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Показать все игры со скидкой.
+        /// Показать все игры со скидкой
         /// </summary>
         static void ShowDiscountedGames()
         {
@@ -154,7 +154,7 @@ namespace GameStore.ConsoleApp
         }
 
         /// <summary>
-        /// Сгруппировать игры по жанрам.
+        /// Сгруппировать игры по жанрам
         /// </summary>
         static void GroupGamesByGenre()
         {

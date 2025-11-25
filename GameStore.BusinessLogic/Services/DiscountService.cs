@@ -9,7 +9,7 @@ namespace GameStore.BusinessLogic.Services
         private readonly IGameRepository _repository;
 
         /// <summary>
-        /// Внедряет репозиторий для работы с играми.
+        /// Внедряет репозиторий для работы с играми
         /// </summary>
         public DiscountService(IGameRepository repository)
         {
@@ -17,7 +17,7 @@ namespace GameStore.BusinessLogic.Services
         }
 
         /// <summary>
-        /// Возвращает список игр, у которых есть скидка.
+        /// Возвращает список игр, у которых есть скидка
         /// </summary>
         public List<Game> GetDiscountedGames()
         {

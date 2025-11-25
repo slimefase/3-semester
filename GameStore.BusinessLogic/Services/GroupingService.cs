@@ -9,7 +9,7 @@ namespace GameStore.BusinessLogic.Services
         private readonly IGameRepository _repository;
 
         /// <summary>
-        /// Внедряет репозиторий для работы с играми.
+        /// Внедряет репозиторий для работы с играми
         /// </summary>
         public GroupingService(IGameRepository repository)
         {
@@ -17,7 +17,7 @@ namespace GameStore.BusinessLogic.Services
         }
 
         /// <summary>
-        /// Группирует игры по жанрам.
+        /// Группирует игры по жанрам
         /// </summary>
         public Dictionary<string, List<Game>> GroupByGenre()
         {

@@ -3,14 +3,14 @@
 namespace GameStore.DataAccessLayer
 {
     /// <summary>
-    /// Реализация репозитория игр на основе Entity Framework Core.
+    /// Реализация репозитория игр на основе Entity Framework Core
     /// </summary>
     public class EntityRepository : IGameRepository
     {
         private readonly DbContextGameStore _context;
 
         /// <summary>
-        /// Инициализирует репозиторий и обеспечивает создание базы данных.
+        /// Инициализирует репозиторий и обеспечивает создание базы данных
         /// </summary>
         public EntityRepository()
         {
@@ -19,9 +19,9 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Добавляет игру в базу данных.
+        /// Добавляет игру в базу данных
         /// </summary>
-        /// <param name="game">Объект игры для добавления.</param>
+        /// <param name="game">Объект игры для добавления</param>
         public void Add(Game game)
         {
             _context.Games.Add(game);
@@ -29,9 +29,9 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Удаляет игру из базы данных.
+        /// Удаляет игру из базы данных
         /// </summary>
-        /// <param name="game">Объект игры для удаления.</param>
+        /// <param name="game">Объект игры для удаления</param>
         public void Delete(Game game)
         {
             _context.Games.Remove(game);
@@ -39,28 +39,28 @@ namespace GameStore.DataAccessLayer
         }
 
         /// <summary>
-        /// Возвращает список всех игр.
+        /// Возвращает список всех игр
         /// </summary>
-        /// <returns>Список игр из базы данных.</returns>
+        /// <returns>Список игр из базы данных</returns>
         public List<Game> ReadAll()
         {
             return _context.Games.ToList();
         }
 
         /// <summary>
-        /// Находит игру по её идентификатору.
+        /// Находит игру по её идентификатору
         /// </summary>
-        /// <param name="id">Идентификатор игры.</param>
-        /// <returns>Найденная игра или null, если не найдена.</returns>
+        /// <param name="id">Идентификатор игры</param>
+        /// <returns>Найденная игра или null, если не найдена</returns>
         public Game ReadById(int id)
         {
             return _context.Games.Find(id);
         }
 
         /// <summary>
-        /// Обновляет данные существующей игры.
+        /// Обновляет данные существующей игры
         /// </summary>
-        /// <param name="game">Объект игры с обновлёнными данными.</param>
+        /// <param name="game">Объект игры с обновлёнными данными</param>
         public void Update(Game game)
         {
             _context.Games.Update(game);
