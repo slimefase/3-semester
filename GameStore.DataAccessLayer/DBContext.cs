@@ -14,12 +14,38 @@ namespace GameStore.DataAccessLayer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectRoot = Path.GetFullPath(Path.Combine(baseDirectory, @"..\..\..\GameStore.DataAccessLayer"));
-            string dbPath = Path.Combine(projectRoot, "games.mdf");
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var dir = new DirectoryInfo(baseDir);
 
-            optionsBuilder.UseSqlServer($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=GameStoreDB;Integrated Security=True");
+            DirectoryInfo? found = null;
+            while (dir != null)
+            {
+                var candidate = Path.Combine(dir.FullName, "GameStore.DataAccessLayer");
+                if (Directory.Exists(candidate))
+                {
+                    found = new DirectoryInfo(candidate);
+                    break;
+                }
+                dir = dir.Parent;
+            }
+
+            string dbFolder;
+            if (found != null)
+            {
+                dbFolder = found.FullName;
+            }
+            else
+            {
+                // fallback — тот путь, который ты указал как желаемый
+                dbFolder = @"C:\Учёба\Архитектура информационных систем\3-semester\GameStore.DataAccessLayer";
+            }
+
+            Directory.CreateDirectory(dbFolder); // убедиться, что папка есть
+            string dbPath = Path.Combine(dbFolder, "games.mdf");
+
+            optionsBuilder.UseSqlServer($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=GameStoreDB;Integrated Security=True;Connect Timeout=30");
         }
+
     }
 }
 

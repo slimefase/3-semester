@@ -1,14 +1,13 @@
 ﻿using GameStore.Entity;
 using GameStore.Shared;
-using System;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace GameStore.WinFormsApp
 {
     public partial class Form1 : Form, IView
     {
         private int? _selectedGameId = null;
+
+        public event EventHandler? ViewLoaded;
 
         public event EventHandler AddClicked;
         public event EventHandler UpdateClicked;
@@ -17,6 +16,13 @@ namespace GameStore.WinFormsApp
         public event EventHandler ShowDiscountedClicked;
         public event EventHandler GroupByGenreClicked;
         public event EventHandler SelectionChanged;
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            this.Load += (s, e) => ViewLoaded?.Invoke(s, e);
+        }
 
         /// <summary>
         /// Отобразить список игр в таблице

@@ -13,17 +13,13 @@ namespace GameStore.Presenter
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // DI
             IKernel kernel = new StandardKernel(new SimpleConfigModule());
             var logic = kernel.Get<Logic>();
 
-            // View
             var form = new Form1();
 
-            // Presenter
             var presenter = new Presenter(form, logic);
 
-            // Run
             Application.Run(form);
         }
     }

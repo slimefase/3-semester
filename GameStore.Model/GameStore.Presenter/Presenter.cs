@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using GameStore.Shared;
+﻿using GameStore.Shared;
 using GameStore.Entity;
 
 namespace GameStore.Presenter
@@ -26,7 +24,7 @@ namespace GameStore.Presenter
             _view.GroupByGenreClicked += OnGroupByGenreClicked;
             _view.SelectionChanged += OnSelectionChanged;
 
-            RefreshView();
+            _view.ViewLoaded += (s, e) => RefreshView();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ namespace GameStore.Shared
 {
     public interface IView
     {
+        event EventHandler ViewLoaded;
         event EventHandler AddClicked;
         event EventHandler UpdateClicked;
         event EventHandler DeleteClicked;
