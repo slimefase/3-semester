@@ -3,7 +3,7 @@ using System.Linq;
 using GameStore.Shared;
 using GameStore.Entity;
 
-namespace GameStore.BusinessLogic
+namespace GameStore.Presenter
 {
     public class Presenter
     {

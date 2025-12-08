@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\GameStore.BusinessLogic\GameStore.BusinessLogic.csproj" />
+    <ProjectReference Include="..\..\GameStore.Entity\GameStore.Entity.csproj" />
+    <ProjectReference Include="..\..\GameStore.WinFormsApp\GameStore.WinFormsApp.csproj" />
+    <ProjectReference Include="..\GameStore.Shared\GameStore.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

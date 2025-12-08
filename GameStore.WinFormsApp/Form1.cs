@@ -1,13 +1,13 @@
-﻿using GameStore.BusinessLogic;
-using GameStore.Entity;
+﻿using GameStore.Entity;
 using GameStore.Shared;
-using Ninject;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace GameStore.WinFormsApp
 {
     public partial class Form1 : Form, IView
     {
-        private Presenter _presenter;
         private int? _selectedGameId = null;
 
         public event EventHandler AddClicked;
@@ -17,22 +17,6 @@ namespace GameStore.WinFormsApp
         public event EventHandler ShowDiscountedClicked;
         public event EventHandler GroupByGenreClicked;
         public event EventHandler SelectionChanged;
-
-        public Form1()
-        {
-            InitializeComponent();
-            IKernel kernel = new StandardKernel(new SimpleConfigModule());
-            var logic = kernel.Get<Logic>();
-            _presenter = new Presenter(this, logic);
-        }
-
-        /// <summary>
-        /// Загрузка данных при старте формы
-        /// </summary>
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Начальные действия выполняет Presenter
-        }
 
         /// <summary>
         /// Отобразить список игр в таблице
@@ -51,7 +35,7 @@ namespace GameStore.WinFormsApp
         }
 
         /// <summary>
-        /// Отобразить резултатирующий текст
+        /// Отобразить результирующий текст
         /// </summary>
         public void DisplayResults(string text)
         {
