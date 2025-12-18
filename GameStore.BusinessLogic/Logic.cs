@@ -1,13 +1,11 @@
 ﻿using GameStore.Entity;
 using GameStore.DataAccessLayer;
 using GameStore.BusinessLogic.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
 using GameStore.Shared;
 
 namespace GameStore.BusinessLogic
 {
-    public class Logic : IModel
+    public class Logic : GameStore.Shared.IModel
     {
         private readonly IGameRepository _repository;
         private readonly IDiscountService _discountService;

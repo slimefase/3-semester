@@ -16,7 +16,7 @@ namespace GameStore.BusinessLogic
             Bind<IDiscountService>().To<DiscountService>().InSingletonScope();
             Bind<IGroupingService>().To<GroupingService>().InSingletonScope();
 
-            Bind<Logic>().ToSelf().InTransientScope();
+            Bind<GameStore.Shared.IModel>().To<GameStore.BusinessLogic.Logic>().InTransientScope();
         }
     }
 }

@@ -4,14 +4,46 @@ namespace GameStore.Shared
 {
     public interface IView
     {
+        /// <summary>
+        /// Загрузка представления
+        /// </summary>
         event EventHandler ViewLoaded;
+
+        /// <summary>
+        /// Нажатие кнопки добавления игры
+        /// </summary>
         event EventHandler AddClicked;
+
+        /// <summary>
+        /// Нажатие кнопки обновления игры
+        /// </summary>
         event EventHandler UpdateClicked;
+
+        /// <summary>
+        /// Нажатие кнопки удаления игры
+        /// </summary>
         event EventHandler DeleteClicked;
+
+        /// <summary>
+        /// Очистка выбранной игры
+        /// </summary>
         event EventHandler ClearSelectionClicked;
+
+        /// <summary>
+        /// Отображение игр со скидкой
+        /// </summary>
         event EventHandler ShowDiscountedClicked;
+
+        /// <summary>
+        /// Группировка игр по жанру
+        /// </summary>
         event EventHandler GroupByGenreClicked;
+
+        /// <summary>
+        /// Изменение выбранной игры
+        /// </summary>
         event EventHandler SelectionChanged;
+
 
         string Title { get; }
         string Genre { get; }
