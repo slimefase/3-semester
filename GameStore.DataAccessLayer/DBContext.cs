@@ -36,11 +36,10 @@ namespace GameStore.DataAccessLayer
             }
             else
             {
-                // fallback — тот путь, который ты указал как желаемый
                 dbFolder = @"C:\Учёба\Архитектура информационных систем\3-semester\GameStore.DataAccessLayer";
             }
 
-            Directory.CreateDirectory(dbFolder); // убедиться, что папка есть
+            Directory.CreateDirectory(dbFolder);
             string dbPath = Path.Combine(dbFolder, "games.mdf");
 
             optionsBuilder.UseSqlServer($@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=GameStoreDB;Integrated Security=True;Connect Timeout=30");
